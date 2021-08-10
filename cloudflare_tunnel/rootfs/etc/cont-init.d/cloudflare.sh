@@ -14,7 +14,7 @@ ls -R $HOME/.cloudflared
 
 yq eval -P /data/options.json > /data/options.yml
 
-cloudflared tunnel ingress validate --config /data/options.yml
+cloudflared tunnel --config /data/options.yml ingress validate
 
 cloudflared update
 
