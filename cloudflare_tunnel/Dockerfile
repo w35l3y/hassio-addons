@@ -16,6 +16,4 @@ RUN \
 
 RUN cloudflared -v
 
-#VOLUME ["/data/addons/local:${HOME}/.cloudflared"]
-
 COPY rootfs /

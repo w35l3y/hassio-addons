@@ -1,7 +1,5 @@
 #!/usr/bin/with-contenv bashio
 
-yq eval -P /data/options.json > /data/options.yml
-
 cloudflared tunnel --config /data/options.yml run
 
 sleep 10
