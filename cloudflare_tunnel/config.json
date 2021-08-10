@@ -1,0 +1,34 @@
+{
+  "name": "Cloudflare Tunnel",
+  "version": "1.0.0",
+  "slug": "cloudflare-tunnel",
+  "description": "Cloudflare Tunnel for Home Assistant",
+  "url": "https://github.com/w35l3y/hassio-addons/cloudflare-tunnel",
+  "ingress": false,
+  "panel_icon": "mdi:docker",
+  "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
+  "map": ["config:rw"],
+  "startup": "services",
+  "boot": "auto",
+  "options": {
+    "tunnel": "hassio",
+    "ingress": [
+      {
+        "hostname": "",
+        "service": "http://homeassistant.local:8123"
+      },
+      {
+        "service": "http_status:404"
+      }
+    ]
+  },
+  "schema": {
+    "tunnel": "str",
+    "ingress": [
+      {
+        "hostname": "str?",
+        "service": "str"
+      }
+    ]
+  }
+}
