@@ -1,5 +1,9 @@
 #!/usr/bin/with-contenv bashio
 
-cloudflared tunnel --config /data/options.yml run
+if bashio::config.has_value 'url'; then
+  cloudflared tunnel --config /data/options.yaml
+else
+  cloudflared tunnel --config /data/options.yaml run
+fi
 
 sleep 10

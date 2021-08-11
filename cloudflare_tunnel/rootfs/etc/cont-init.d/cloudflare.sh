@@ -2,6 +2,12 @@
 
 set -eE
 
+yq eval -P /data/options.json > /data/options.yaml
+
+if bashio::config.has_value 'url'; then
+  exit 0
+fi
+
 if bashio::config.is_empty 'ingress[0].hostname'; then
   rm -f /data/cert.pem
   bashio::exit.nok "Hostname not defined"
@@ -12,9 +18,7 @@ cp -r /data/. $HOME/.cloudflared
 
 ls -R $HOME/.cloudflared
 
-yq eval -P /data/options.json > /data/options.yml
-
-cloudflared tunnel --config /data/options.yml ingress validate
+cloudflared tunnel --config /data/options.yaml ingress validate
 
 cloudflared update
 
@@ -27,5 +31,6 @@ if ! bashio::fs.file_exists "$HOME/.cloudflared/cert.pem"; then
   rm -rf $HOME/.cloudflared/*.json
   cloudflared tunnel create "$TUNNEL"
 
+  rm -rf /data/*.json
   cp -r $HOME/.cloudflared/. /data/
 fi
