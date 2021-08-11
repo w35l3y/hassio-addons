@@ -53,7 +53,7 @@ url: http://local_ip:8123
 ```
 
 If you **have** your own domain<br />
-Note: This way, you can have as many services as you want at once. Just add a new hostname and service. The last one is "catch-all", so it doesn't have specific hostname. You also may use wildcard character.<br />
+Note: This way, you can have as many services as you want at once. Just add a new hostname and service. The last one is "catch-all", so it doesn't have specific hostname. You may also use wildcard character in hostname.<br />
 
 ```
 no-autoupdate: true
@@ -84,7 +84,7 @@ _For more details:_
    - Copy the `UUID` tunnel identifier
 7. Add CNAME<br />
    - Go to https://dash.cloudflare.com/?zone=dns<br />
-   - Add CNAME `example` alias to `UUID.cfargotunnel.com` com tráfego monitorado pela Cloudflare
+   - Add CNAME `example` alias to `<UUID>.cfargotunnel.com` with proxy enabled
 
 ## Common errors
 
