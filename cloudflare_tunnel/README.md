@@ -35,7 +35,7 @@ _For more details:_
 2. Add new repository ( https://github.com/w35l3y/hassio-addons )<br />
 
 - Click Supervisor > Add-ons Store<br />
-- Click on the dots button at the top right side and then Repositories<br />
+- Click on the 3-dots button at the top right side and then Repositories<br />
 - Copy and paste https://github.com/w35l3y/hassio-addons and then press Add<br />
 
 3. Install add-on ( Cloudflare Tunnel )<br />
@@ -44,7 +44,7 @@ _For more details:_
 - Open Configuration and add the following code:<br />
 
 If you **don't have** your own domain<br />
-Note: This way, a-very-long-random-subdomain-name.trycloudflare.com will be created and it will be different on every boot.<br />
+Note: This way, `a-very-long-random-subdomain-name.trycloudflare.com` will be created and it will be different on every boot.<br />
 
 ```
 no-autoupdate: true
@@ -75,16 +75,20 @@ _For more details:_
      - The page should show up in the Log<br />
    - If you **have** your own domain, then follow the remaining steps.<br />
      - The authetication page should show up in the Log<br />
+       ![Screenshot of the Log containing the login URL][log-login-url]
 5. Authenticate _(Beyond steps are for custom domains only)_<br />
    - Copy and paste the authentication link in the browser<br />
    - Click `mydomain.com`<br />
    - Confirm the authentication<br />
-6. Get UUID tunnel identifier<br />
+6. Get Tunnel ID<br />
    - Return to tab Log<br />
-   - Copy the `UUID` tunnel identifier
+   - Copy the Tunnel ID
+     ![Screenshot of the Log containing the Tunnel ID][log-tunnel-created]
 7. Add CNAME<br />
    - Go to https://dash.cloudflare.com/?zone=dns<br />
-   - Add CNAME `example` alias to `<UUID>.cfargotunnel.com` with proxy enabled
+   - Add CNAME `example` alias to `<tunnelID>.cfargotunnel.com` with proxy enabled
+     - Change `<tunnelID>` to the Tunnel ID, for example, `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.cfargotunnel.com`
+       ![Screenshot of the Cloudflare Dash][cloudflare-cname]
 
 ## Common errors
 
@@ -112,3 +116,6 @@ _For more details:_
 [project-stage-shield]: https://img.shields.io/badge/Project%20Stage-Development-yellowgreen.svg
 [releases]: https://github.com/w35l3y/hassio-addons/cloudflare_tunnel/releases
 [semver]: http://semver.org/spec/v2.0.0.htm
+[log-login-url]: https://github.com/w35l3y/hassio-addons/raw/main/cloudflare_tunnel/resources/img/log-login-url.jpg
+[log-tunnel-created]: https://github.com/w35l3y/hassio-addons/raw/main/cloudflare_tunnel/resources/img/log-tunnel-created.jpg
+[cloudflare-cname]: https://github.com/w35l3y/hassio-addons/raw/main/cloudflare_tunnel/resources/img/cloudflare-cname.jpg
