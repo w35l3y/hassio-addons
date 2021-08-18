@@ -27,7 +27,9 @@ if ! bashio::fs.file_exists "$HOME/.cloudflared/cert.pem"; then
 
   cloudflared tunnel list
   TUNNEL=$(bashio::config 'tunnel')
-  cloudflared tunnel delete -f "$TUNNEL"
+
+  $(cloudflared tunnel delete -f "$TUNNEL")
+
   rm -rf $HOME/.cloudflared/*.json
   cloudflared tunnel create "$TUNNEL"
 

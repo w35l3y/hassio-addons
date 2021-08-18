@@ -1,6 +1,6 @@
 {
   "name": "Cloudflare Tunnel",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "slug": "cloudflare-tunnel",
   "description": "Cloudflare Tunnel for Home Assistant",
   "url": "https://github.com/w35l3y/hassio-addons/cloudflare-tunnel",
@@ -28,6 +28,7 @@
     "no-autoupdate": "bool?",
     "loglevel": "str?",
     "logfile": "str?",
+    "metrics": "str?",
     "url": "str?",
     "ingress": [
       {

@@ -1,8 +1,6 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-ENV TUNNEL_METRICS='0.0.0.0:8099'
-
 ARG BUILD_ARCH
 RUN \
     ARCH="${BUILD_ARCH}" \
@@ -15,7 +13,5 @@ RUN \
     && wget -O /usr/local/bin/cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-$ARCH && chmod +x /usr/local/bin/cloudflared
 
 RUN cloudflared -v
-
-EXPOSE 8099
 
 COPY rootfs /
