@@ -20,8 +20,6 @@ ls -R $HOME/.cloudflared
 
 cloudflared tunnel --config /data/options.yaml ingress validate
 
-cloudflared update
-
 if ! bashio::fs.file_exists "$HOME/.cloudflared/cert.pem"; then
   cloudflared tunnel login
 
