@@ -41,28 +41,30 @@ _For more details:_
 3. Install add-on ( Cloudflare Tunnel )<br />
 
 - Press Install<br />
-- Open Configuration and add the following code:<br />
+- Open Configuration and add the following code: (Only use IP addresses! Don't use DNS names. Otherwise, it won't work properly.)<br />
 
-If you **don't have** your own domain<br />
-Note: This way, `a-very-long-random-subdomain-name.trycloudflare.com` will be created and it will be different on every boot.<br />
+Copy the following code _only_ if you **don't have** your own domain<br />
+Note: This way, `a-very-long-random-subdomain-name.trycloudflare.com` will be created after you complete step 4 and it will be different on every boot.<br />
 
 ```
 no-autoupdate: true
 ingress: []
-url: http://local_ip:8123
+url: http://ha_local_ip:8123
 ```
 
-If you **have** your own domain<br />
+Copy the following code _only_ if you **have** your own domain<br />
 Note: This way, you can have as many services as you want at once. Just add a new hostname and service. The last one is "catch-all", so it doesn't have specific hostname. You may also use wildcard character in hostname.<br />
 
 ```
 no-autoupdate: true
 ingress:
   - hostname: example.mydomain.com
-    service: http://local_ip:8123
+    service: http://ha_local_ip:8123
   - service: http_status:404 # Leave it as is
 tunnel: hassio # May be anything you want. It identifies the tunnel and doesn't have anything to do with hostname
 ```
+
+Don't mix things! Or you have your own domain or you don't have.<br />
 
 _For more details:_
 
