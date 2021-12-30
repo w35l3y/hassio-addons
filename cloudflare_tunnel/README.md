@@ -52,7 +52,7 @@ ingress: []
 url: http://ha_local_ip:8123
 ```
 
-Copy the following code _only_ if you **have** your own domain<br />
+Copy the following code _only_ if you **have** your own domain and it is managed by [Cloudflare](https://dash.cloudflare.com/)<br />
 Note: This way, you can have as many services as you want at once. Just add a new hostname and service. The last one is "catch-all", so it doesn't have specific hostname. You may also use wildcard character in hostname.<br />
 
 ```
