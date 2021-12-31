@@ -12,6 +12,7 @@ RUN \
     && if [[ "${BUILD_ARCH}" = "armv7" ]]; then ARCH="arm"; fi \
     && if [[ "${BUILD_ARCH}" = "i386" ]]; then ARCH="386"; fi \
     && apk add --no-cache libc6-compat yq \
+    && echo "Version: $CVERSION / Architeture: $ARCH" \
     && wget -O /usr/local/bin/cloudflared https://github.com/cloudflare/cloudflared/releases/$CVERSION/cloudflared-linux-$ARCH && chmod +x /usr/local/bin/cloudflared
 
 RUN cloudflared -v
