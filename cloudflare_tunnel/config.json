@@ -20,7 +20,7 @@
       {
         "service": "http_status:404"
       }
-    ],
+    ]
   },
   "schema": {
     "tunnel": "str?",
