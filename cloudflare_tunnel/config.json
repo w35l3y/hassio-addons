@@ -1,6 +1,6 @@
 {
   "name": "Cloudflare Tunnel",
-  "version": "1.1.7",
+  "version": "1.2.0",
   "slug": "cloudflare-tunnel",
   "description": "Cloudflare Tunnel for Home Assistant",
   "url": "https://github.com/w35l3y/hassio-addons/tree/main/cloudflare_tunnel",
@@ -12,19 +12,38 @@
   "boot": "auto",
   "options": {
     "no-autoupdate": true,
+		"originRequest": null,
     "ingress": [
       {
         "hostname": "",
-        "service": "http://ha_local_ip:8123"
+        "service": "http://ha_local_ip:8123",
+				"originRequest": null
       },
       {
-        "service": "http_status:404"
+        "service": "http_status:404",
+				"originRequest": null
       }
     ]
   },
   "schema": {
     "tunnel": "str?",
     "credentials-file": "str?",
+		"originRequest": {
+			"connectTimeout": "str?",
+			"tlsTimeout": "str?",
+			"tcpKeepAlive": "str?",
+			"​noHappyEyeballs": "bool?",
+			"keepAliveConnections": "int(0,)?",
+			"​keepAliveTimeout": "str?",
+			"httpHostHeader": "str?",
+			"originServerName": "str?",
+			"caPool": "str?",
+			"noTLSVerify": "bool?",
+			"disableChunkedEncoding": "bool?",
+			"proxyAddress": "str?",
+			"proxyPort": "port?",
+			"proxyType": "str?"
+		},
     "no-autoupdate": "bool?",
     "loglevel": "str?",
     "logfile": "str?",
@@ -32,9 +51,25 @@
     "url": "str?",
     "ingress": [
       {
-        "service": "str?",
         "hostname": "str?",
-        "path": "str?"
+        "path": "str?",
+        "service": "str?",
+				"originRequest": {
+					"connectTimeout": "str?",
+					"tlsTimeout": "str?",
+					"tcpKeepAlive": "str?",
+					"​noHappyEyeballs": "bool?",
+					"keepAliveConnections": "int(0,)?",
+					"​keepAliveTimeout": "str?",
+					"httpHostHeader": "str?",
+					"originServerName": "str?",
+					"caPool": "str?",
+					"noTLSVerify": "bool?",
+					"disableChunkedEncoding": "bool?",
+					"proxyAddress": "str?",
+					"proxyPort": "port?",
+					"proxyType": "str?"
+				},
       }
     ]
   }
