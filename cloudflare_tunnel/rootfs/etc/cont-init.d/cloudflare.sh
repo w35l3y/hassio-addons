@@ -34,3 +34,5 @@ if ! bashio::fs.file_exists "$HOME/.cloudflared/cert.pem"; then
   rm -rf /data/*.json
   cp -r $HOME/.cloudflared/. /data/
 fi
+
+cloudflared tunnel route ip show
