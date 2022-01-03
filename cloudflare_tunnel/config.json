@@ -1,6 +1,6 @@
 {
   "name": "Cloudflare Tunnel",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "slug": "cloudflare-tunnel",
   "description": "Cloudflare Tunnel for Home Assistant",
   "url": "https://github.com/w35l3y/hassio-addons/tree/main/cloudflare_tunnel",
@@ -15,16 +15,14 @@
   },
   "options": {
     "no-autoupdate": true,
-    "originRequest": null,
+    "originRequest": {},
     "ingress": [
       {
         "hostname": "",
-        "service": "http://ha_local_ip:8123",
-        "originRequest": null
+        "service": "http://ha_local_ip:8123"
       },
       {
-        "service": "http_status:404",
-        "originRequest": null
+        "service": "http_status:404"
       }
     ]
   },
