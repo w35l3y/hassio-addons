@@ -97,10 +97,14 @@ _For more details:_
 - _400: Bad Request_<br />
   Update `trusted_proxies` with the IP or range that is shown in the HA Logs (Sidebar Configurations > Logs).
 
-- _Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: dial tcp: lookup xxx on xxx: server misbehaving_<br />
+- _Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: **dial tcp: lookup xxx on xxx: server misbehaving**_<br />
   Update `url` or `service` with the correct local IP and port of the service in the addon configuration (Add-on Cloudflare Tunnel > Configuration).<br />
   I wasn't able to make it work with DNS names, for example, `http://homeassistant.local:8123`.<br />
   So, let me know if you did it successfully.
+
+- _Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: **x509: cannot validate certificate for x.x.x.x because it doesn't contain any IP SANs**_<br />
+  Update your internal SSL certificate because it is malformed/incomplete.<br />
+
 
 [aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
