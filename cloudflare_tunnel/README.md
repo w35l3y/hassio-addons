@@ -48,6 +48,7 @@ Note: This way, `a-very-long-random-subdomain-name.trycloudflare.com` will be cr
 
 ```
 no-autoupdate: true
+originRequest: {}
 ingress: []
 url: http://ha_local_ip:8123
 ```
@@ -57,6 +58,7 @@ Note: This way, you can have as many services as you want at once. Just add a ne
 
 ```
 no-autoupdate: true
+originRequest: {}
 ingress:
   - hostname: example.mydomain.com
     service: http://ha_local_ip:8123
