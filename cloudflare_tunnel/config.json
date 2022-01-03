@@ -56,8 +56,7 @@
       {
         "hostname": "str?",
         "path": "str?",
-        "service": "str?",
-        "originRequest": {}
+        "service": "str?"
       }
     ]
   }
