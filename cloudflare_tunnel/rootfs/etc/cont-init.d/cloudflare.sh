@@ -36,3 +36,5 @@ if ! bashio::fs.file_exists "$HOME/.cloudflared/cert.pem"; then
 fi
 
 cloudflared tunnel route ip show
+
+ifconfig
