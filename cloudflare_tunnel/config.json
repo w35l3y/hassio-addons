@@ -72,7 +72,7 @@
           "proxyAddress": "str?",
           "proxyPort": "port?",
           "proxyType": "str?"
-        },
+        }
       }
     ]
   }
