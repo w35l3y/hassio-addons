@@ -25,7 +25,8 @@
       {
         "service": "http_status:404"
       }
-    ]
+    ],
+    "tunnel": "homeassistant"
   },
   "schema": {
     "tunnel": "str?",
