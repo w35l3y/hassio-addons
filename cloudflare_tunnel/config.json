@@ -20,7 +20,7 @@
     "ingress": [
       {
         "hostname": "",
-        "service": "http://ha_local_ip:8123"
+        "service": "http://homeassistant:8123"
       },
       {
         "service": "http_status:404"

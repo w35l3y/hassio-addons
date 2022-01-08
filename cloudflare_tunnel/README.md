@@ -18,7 +18,7 @@ Cloudflare Argo Tunnel uses a tunnel and therefore bypasses any need for a NAT'd
 1. Update trusted proxies<br />
 
 - Open /config/configuration.yaml using the file editor of your choice<br />
-- Add the following code as is:<br />
+- Add the following code **as is**:<br />
 
 ```
 http:
@@ -51,7 +51,7 @@ no-autoupdate: true # leave it as is
 metrics: localhost:41705 # leave it as is
 ingress: [] # leave it as is
 originRequest: {}
-url: http://ha_local_ip:8123
+url: http://homeassistant:8123 # without ".local" or IP address
 ```
 
 Copy the following code _only_ if you **have** your own domain and it is managed by [Cloudflare](https://dash.cloudflare.com/)<br />
@@ -62,7 +62,7 @@ no-autoupdate: true # leave it as is
 metrics: localhost:41705 # leave it as is
 ingress:
   - hostname: example.mydomain.com
-    service: http://ha_local_ip:8123
+    service: http://homeassistant:8123 # without ".local" or IP address
   - service: http_status:404 # leave it as is
 originRequest: {}
 tunnel: hassio # May be anything you want. It identifies the tunnel and doesn't have anything to do with hostname
@@ -103,8 +103,6 @@ _For more details:_
 
 - _Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: **dial tcp: lookup xxx on xxx: server misbehaving**_<br />
   Update `url` or `service` with the correct local IP and port of the service in the addon configuration (Add-on Cloudflare Tunnel > Configuration).<br />
-  I wasn't able to make it work with DNS names, for example, `http://homeassistant.local:8123`.<br />
-  So, let me know if you did it successfully.
 
 - _Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: **x509: cannot validate certificate for x.x.x.x because it doesn't contain any IP SANs**_<br />
   Update your internal SSL certificate because it is malformed/incomplete.<br />
