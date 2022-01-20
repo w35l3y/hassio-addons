@@ -107,6 +107,9 @@ _For more details:_
 - _Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: **x509: cannot validate certificate for x.x.x.x because it doesn't contain any IP SANs**_<br />
   Update your internal SSL certificate because it is malformed/incomplete.<br />
 
+## References
+
+- <a href="https://iconscout.com/icons/cloudflare" target="_blank">Cloudflare Icon</a> on <a href="https://iconscout.com">Iconscout</a><br />
 
 [aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
