@@ -41,7 +41,7 @@ _For more details:_
 3. Install add-on ( Cloudflare Tunnel )<br />
 
 - Press Install<br />
-- Open Configuration and add the following code: (Only use local IP addresses! Don't use DNS names. Otherwise, it won't work properly.)<br />
+- Open Configuration and add the following code:<br />
 
 Copy the following code _only_ if you **don't have** your own domain<br />
 Note: This way, `a-very-long-random-subdomain-name.trycloudflare.com` will be created after you complete step 4 and it will be different on every boot.<br />
