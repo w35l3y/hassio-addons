@@ -15,6 +15,7 @@ RUN \
     && echo "Version: $CVERSION / Architeture: $ARCH" \
     && wget -O /usr/local/bin/cloudflared https://github.com/cloudflare/cloudflared/releases/$CVERSION/cloudflared-linux-$ARCH && chmod +x /usr/local/bin/cloudflared
 
+COPY rootfs /
+
 RUN cloudflared -v
 
-COPY rootfs /
