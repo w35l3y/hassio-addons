@@ -5,7 +5,7 @@
   "description": "Cloudflare Tunnel for Home Assistant",
   "url": "https://github.com/w35l3y/hassio-addons/tree/main/cloudflare_tunnel",
   "ingress": false,
-  "panel_icon": "mdi:docker",
+  "panel_icon": "mdi:tunnel",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
   "map": ["config:rw"],
   "startup": "services",

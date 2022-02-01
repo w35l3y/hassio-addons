@@ -6,7 +6,7 @@
   "url": "https://github.com/w35l3y/hassio-addons/tree/main/whatsapp",
   "ingress": true,
   "ingress_entry": "ingress/",
-  "panel_icon": "mdi:docker",
+  "panel_icon": "mdi:whatsapp",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
   "map": ["config:rw"],
   "startup": "services",
