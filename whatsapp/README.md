@@ -11,7 +11,7 @@
 
 ## About
 
-WhatsApp for Home Assistant uses [whatsapp-web.js](https://github.com/pedroslopez/whatsapp-web.js/) to access WhatsApp WEB in background. That said, it won't work too well with another concurrent session open.
+WhatsApp for Home Assistant uses [whatsapp-web.js](https://github.com/pedroslopez/whatsapp-web.js/) to access WhatsApp WEB in background.<br />That said, it won't work too well with another concurrent session open.
 
 ## How to use it
 
@@ -37,7 +37,7 @@ WhatsApp for Home Assistant uses [whatsapp-web.js](https://github.com/pedroslope
 - Wait for the QR Code to show up
 - Point your WhatsApp to the QR Code
 
-(Once done, the "WEB UI" won't work for anything else)
+(Once done, the "WEB UI" won't work for anything else)<br />
 I have already requested a way to be able to [print the QR Code in the Log tab](https://github.com/home-assistant/frontend/discussions/11491) so that we wouldn't need Ingress.
 
 _For more details:_
@@ -47,8 +47,8 @@ _For more details:_
 4. Call the service `hassio.addon_stdin`
 
 Currently, these are the only acceptable types:
-* chatIds: by default, retrieves the list of all your active groups in the log of the add-on in order to get the `chatId` of groups.
-* message: sends a message from your account to someone else
+* `chatIds`: by default, retrieves the list of all your active groups in the log of the add-on in order to get the `chatId` of groups.
+* `message`: sends a message from your account to someone else
 
 Example 1:
 ```
@@ -71,9 +71,9 @@ data:
       to: nnnnnnnnnnnn  # chatId (*)
       body: your message goes here
 ```
-(*) If you want to send a message to a group, then call "chatIds" to identity what is its `chatId`.
-contact `chatId` usually is composed of IDD + DDD + PHONE NUMBER (numbers only) followed by "@c.us"
-group `chatId` doesn't seem to follow a pattern except that ends with "@g.us"
+(*) If you want to send a message to a group, then call "chatIds" to identity what is its `chatId`.<br />
+contact `chatId` usually is composed of IDD + DDD + PHONE NUMBER (numbers only) followed by "@c.us"<br />
+group `chatId` doesn't seem to follow a pattern except that ends with "@g.us"<br />
 
 [![Open your Home Assistant instance and show your service developer tools.](https://my.home-assistant.io/badges/developer_services.svg)](https://my.home-assistant.io/redirect/developer_services/)
 
@@ -90,6 +90,11 @@ group `chatId` doesn't seem to follow a pattern except that ends with "@g.us"
 - Session will be stored after calling the service. In other words,<br />
   if you restart the add-on before calling it, then a new QR code will be requested.
 
+[aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
+[amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
+[armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
+[armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
+[i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
 [commits]: https://github.com/w35l3y/hassio-addons/commits/main
 [contributors]: https://github.com/w35l3y/hassio-addons/graphs/contributors
 [gitlabci]: https://github.com/w35l3y/hassio-addons/whatsapp/pipelines
