@@ -1,0 +1,40 @@
+{
+  "name": "WhatsApp",
+  "version": "1.0.0",
+  "slug": "whatsapp",
+  "description": "WhatsApp for Home Assistant",
+  "url": "https://github.com/w35l3y/hassio-addons/tree/main/whatsapp",
+  "ingress": true,
+  "ingress_entry": "ingress/",
+  "panel_icon": "mdi:docker",
+  "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
+  "map": ["config:rw"],
+  "startup": "services",
+  "boot": "auto",
+  "hassio_api": true,
+  "homeassistant_api": true,
+  "stdin": true,
+  "environment": {
+    "NODE_ENV": "production",
+    "PORT": "8099"
+  },
+  "ports": {
+    "8099/tcp": null
+  },
+  "options": {
+    "env_vars": [
+      { "name": "OPTS_HA_CHAT_IDS_FILTER", "value": "GROUP" },
+      { "name": "OPTS_HA_RETRY_QUEUE", "value": "true" },
+      { "name": "OPTS_HA_NEW_SESSION", "value": "false" },
+      { "name": "OPTS_HA_DEFAULT_IDD", "value": "" },
+      { "name": "OPTS_HA_DEFAULT_DDD", "value": "" },
+      { "name": "OPTS_HA_DEFAULT_TO", "value": "" }
+    ]
+  },
+  "schema": {
+    "env_vars": [{
+      "name": "match(^OPTS_HA_([A-Z0-9_])+$)",
+      "value": "str"
+    }]
+  }
+}

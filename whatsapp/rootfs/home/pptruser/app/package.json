@@ -1,0 +1,18 @@
+{
+  "name": "nodejs-whatsapp-homeassistant",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --trace-warnings --unhandled-rejections=strict /index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "w35l3y",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.2",
+    "qrcode": "^1.5.0",
+    "puppeteer": "10.1.0",
+    "whatsapp-web.js": "^1.15.3"
+  }
+}

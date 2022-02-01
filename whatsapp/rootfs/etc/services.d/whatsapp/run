@@ -1,0 +1,3 @@
+#!/usr/bin/with-contenv bashio
+
+exec su-exec pptruser node --trace-warnings /home/pptruser/app/index.js
