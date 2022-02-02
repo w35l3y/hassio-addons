@@ -16,26 +16,35 @@ WhatsApp for Home Assistant uses [whatsapp-web.js](https://github.com/pedroslope
 
 [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fw35l3y%2Fhassio-addons%2F)
 
-- Click Supervisor > Add-ons Store<br />
-- Click on the 3-dots button at the top right side and then Repositories<br />
-- Copy and paste https://github.com/w35l3y/hassio-addons and then press Add<br />
+- Click Supervisor > Add-ons Store
+- Click on the 3-dots button at the top right side and then Repositories
+- Copy and paste https://github.com/w35l3y/hassio-addons and then press Add
 
 2. Install add-on ( WhatsApp )<br />
 
-- Press "Install"<br />
+- Press "Install"
+- Open Configuration and certify `OPTS_HA_BASE_URL` and `OPTS_HA_TOKEN` (Long-Lived Access Token) are filled correctly.
 
-3. Start the addon and link a device
+[![Open your Home Assistant instance and show your Home Assistant user's profile.](https://my.home-assistant.io/badges/profile.svg)](https://my.home-assistant.io/redirect/profile/)
 
-[![Open your Home Assistant instance and Open the ingress URL of a Supervisor add-on.](https://my.home-assistant.io/badges/supervisor_ingress.svg)](https://my.home-assistant.io/redirect/supervisor_ingress/?addon=c50d1fa4_whatsapp)
+It is recommended to create a specific `long-lived access token` to the add-on.
 
-- Open your WhatsApp to link a device
-- Start the add-on
-- Press "Open WEB UI" (Wait the add-on to start)
-- Wait for the QR Code to show up
+![Screenshot of the User Profile with Long-lived access token created][long-lived-access-token-created]
+
+_For more details:_
+
+- https://developers.home-assistant.io/docs/api/rest
+- https://developers.home-assistant.io/docs/auth_api/#long-lived-access-token
+- https://developers.home-assistant.io/docs/auth_api/#making-authenticated-requests
+
+3. Start the add-on and link a device
+
+[![Open your Home Assistant instance and show the dashboard of a Supervisor add-on.](https://my.home-assistant.io/badges/supervisor_addon.svg)](https://my.home-assistant.io/redirect/supervisor_addon/?addon=c50d1fa4_whatsapp)
+
+- Open your WhatsApp mobile app to link a device
+- Press "Start"
+- Wait for the QR Code to show up in the Notification bar
 - Point your WhatsApp to the QR Code
-
-(Once done, the "WEB UI" won't work for anything else)<br />
-I have already requested a way to be able to [print the QR Code in the Log tab](https://github.com/home-assistant/frontend/discussions/11491) so that we wouldn't need Ingress.
 
 _For more details:_
 
@@ -102,3 +111,5 @@ group `chatId` doesn't seem to follow a pattern except that ends with "@g.us"<br
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2022.svg
 [project-stage-shield]: https://img.shields.io/badge/Project%20Stage-Development-yellowgreen.svg
 [semver]: http://semver.org/spec/v2.0.0.htm
+[long-lived-access-token-created]: https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/long-lived-access-token-created.jpg
+

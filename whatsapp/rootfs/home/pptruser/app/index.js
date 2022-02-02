@@ -5,29 +5,44 @@ const convert = {
   'bool': v => v && !FALSY_VALUES.includes(v.toLowerCase().trim()) || false
 }
 
-/* NODE_ENV SUPERVISOR_TOKEN */
+let error = false
 const constants = [
+  { name: 'OPTS_HA_BASE_URL', type: 'string', required: true },
+  { name: 'OPTS_HA_TOKEN', type: 'string', required: true },
   { name: 'OPTS_HA_CHAT_IDS_FILTER', type: 'string', defaultValue: 'GROUP' },
   { name: 'OPTS_HA_DEFAULT_TO', type: 'string' },
   { name: 'OPTS_HA_DEFAULT_IDD', type: 'number' },
   { name: 'OPTS_HA_DEFAULT_DDD', type: 'number' },
   { name: 'OPTS_HA_NEW_SESSION', type: 'bool', defaultValue: 'false' },
   { name: 'OPTS_HA_RETRY_QUEUE', type: 'bool', defaultValue: 'true' }
-].reduce((acc, { name, type, defaultValue }) => ({
-  ...acc,
-  [name]: convert[type](process.env[name] || defaultValue)
-}), {})
+].reduce((acc, { name, type, defaultValue, required }) => {
+  let value = convert[type](process.env[name] || defaultValue || '')
+
+  if (required && !value) {
+    error = true
+    console.log(name, 'Required')
+  }
+
+  return {
+    ...acc,
+    [name]: value
+  }
+}, {})
+
+if (error) {
+  throw new Error('Some fields are required')
+}
 
 /////////////////////////// WHATSAPP
 
 const qrcode = require('qrcode')
+const axios = require('axios')
 const fs = require('fs')
 const { Client } = require('whatsapp-web.js')
 const SESSION_FILE_PATH_R = '/data/session.json'
 const SESSION_FILE_PATH_W = __dirname + '/session.json'
 
 let queue = []
-let connected = false
 let sessionData = null
 // https://github.com/home-assistant/supervisor/issues/2158
 // https://developers.home-assistant.io/docs/api/supervisor/endpoints#addons
@@ -53,10 +68,32 @@ const client = new Client({
   session: sessionData
 })
 
+function request ({ url, headers, ...o }) {
+  return axios({
+    method: 'POST',
+    url: new URL(url, constants.OPTS_HA_BASE_URL).href,
+    ...o,
+    headers: {
+      authorization: 'Bearer ' + constants.OPTS_HA_TOKEN,
+      ['content-type']: 'application/json',
+      ...headers
+    },
+  })
+}
+
 client.on('qr', qr => {
-  console.log(new Date(), 'qr', qr)
-  console.log("Open WEB UI ( https://my.home-assistant.io/redirect/supervisor_ingress/?addon=c50d1fa4_whatsapp )")
-  qrcode.toFile(__dirname + '/public/qrcode.png', qr)
+  console.log(new Date(), 'qr')
+
+  qrcode.toDataURL(qr, (err, url) => {
+    request({
+      url: '/api/services/persistent_notification/create',
+      data: {
+        notification_id: 'whatsapp_qrcode',
+        title: 'WhatsApp - Link your device',
+        message: '<img src="' + url + '" />'
+      }
+    })
+  })
 })
 
 client.on('auth_failure', message => {
@@ -65,6 +102,7 @@ client.on('auth_failure', message => {
 
 client.on('authenticated', session => {
   console.log(new Date(), 'authenticated')
+
   sessionData = session
   fs.writeFile(SESSION_FILE_PATH_W, JSON.stringify(session), (err) => {
     if (err) {
@@ -89,7 +127,7 @@ async function send_queue() {
 
 client.on('ready', () => {
   console.log(new Date(), 'ready')
-  connected = true
+
   send_queue()
 })
 
@@ -99,7 +137,6 @@ client.on('change_state', state => {
 
 client.on('disconnected', reason => {
   console.log(new Date(), 'disconnected', reason)
-  connected = false
 })
 
 //client.on('message', message => {
@@ -174,13 +211,13 @@ const express = require('express')
 
 const app = express()
 
-app.use(['/ingress', '/ingress/*'], (req, res, next) => { // for `ingress` only
-  if (req.ip !== '::ffff:172.30.32.2') {
-    res.status(403).send({ messages: [ { type: "invalid.source", parameters: { name: "ip", value: req.ip } } ] })
-    return
-  }
-  next()
-}, express.static(__dirname + '/public'))
+//app.use(['/ingress', '/ingress/*'], (req, res, next) => { // for `ingress` only
+//  if (req.ip !== '::ffff:172.30.32.2') {
+//    res.status(403).send({ messages: [ { type: "invalid.source", parameters: { name: "ip", value: req.ip } } ] })
+//    return
+//  }
+//  next()
+//}, express.static(__dirname + '/public'))
 
 app.use(express.json(), (error, req, res, next) => {
   res.status(400).send({ messages: [ error ] })
@@ -202,6 +239,9 @@ app.post('/local/stdin', (req, res, next) => {  // for `hassio.addon_stdin` only
     case 'chat_ids':
     case 'chat-ids':
     case 'chatIds':
+    case 'chat_id':
+    case 'chat-id':
+    case 'chatId':
       return get_chat_ids({ body }, res)
     case 'message':
       return post_message({ body }, res)

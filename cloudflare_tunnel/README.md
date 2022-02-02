@@ -17,8 +17,8 @@ Cloudflare Argo Tunnel uses a tunnel and therefore bypasses any need for a NAT'd
 
 1. Update trusted proxies<br />
 
-- Open /config/configuration.yaml using the file editor of your choice<br />
-- Add the following code **as is**:<br />
+- Open /config/configuration.yaml using the file editor of your choice
+- Add the following code **as is**:
 
 ```
 http:
@@ -44,8 +44,8 @@ _For more details:_
 
 [![Open your Home Assistant instance and show the dashboard of a Supervisor add-on.](https://my.home-assistant.io/badges/supervisor_addon.svg)](https://my.home-assistant.io/redirect/supervisor_addon/?addon=c50d1fa4_cloudflare-tunnel)
 
-- Press Install<br />
-- Open Configuration and add the following code:<br />
+- Press "Install"
+- Open Configuration and add the following code:
 
 Copy the following code _only_ if you **don't have** your own domain<br />
 Note: This way, `a-very-long-random-subdomain-name.trycloudflare.com` will be created after you complete step 4 and it will be different on every boot.<br />
