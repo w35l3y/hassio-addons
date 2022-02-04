@@ -1,6 +1,7 @@
 # WhatsApp for Home Assistant
 
 ![Project Stage][project-stage-shield]
+![Maintenance][maintenance-shield]
 [![License][license-shield]][license]
 
 ![Supports aarch64 Architecture][aarch64-shield]
@@ -23,19 +24,6 @@ WhatsApp for Home Assistant uses [whatsapp-web.js](https://github.com/pedroslope
 2. Install add-on ( WhatsApp )<br />
 
 - Press "Install"
-- Open Configuration and certify `OPTS_HA_BASE_URL` and `OPTS_HA_TOKEN` (Long-Lived Access Token) are filled correctly.
-
-[![Open your Home Assistant instance and show your Home Assistant user's profile.](https://my.home-assistant.io/badges/profile.svg)](https://my.home-assistant.io/redirect/profile/)
-
-It is recommended to create a specific `long-lived access token` to the add-on.
-
-![Screenshot of the User Profile with Long-lived access token created][long-lived-access-token-created]
-
-_For more details:_
-
-- https://developers.home-assistant.io/docs/api/rest
-- https://developers.home-assistant.io/docs/auth_api/#long-lived-access-token
-- https://developers.home-assistant.io/docs/auth_api/#making-authenticated-requests
 
 3. Start the add-on and link a device
 
@@ -100,6 +88,7 @@ If you aren't sure about what `chatId` to inform, then call the example 1 first.
 - Session will be stored after calling the service. In other words,<br />
   if you restart the add-on before calling it, then a new QR code will be requested.
 
+
 [aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
 [armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
@@ -112,8 +101,6 @@ If you aren't sure about what `chatId` to inform, then call the example 1 first.
 [issue]: https://github.com/w35l3y/hassio-addons/issues
 [license-shield]: https://img.shields.io/github/license/hassio-addons/addon-vscode.svg
 [license]: https://github.com/w35l3y/hassio-addons/LICENSE.md
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2022.svg
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2022
 [project-stage-shield]: https://img.shields.io/badge/Project%20Stage-Development-yellowgreen.svg
 [semver]: http://semver.org/spec/v2.0.0.htm
-[long-lived-access-token-created]: https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/long-lived-access-token-created.jpg
-

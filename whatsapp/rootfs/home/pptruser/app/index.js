@@ -7,8 +7,6 @@ const convert = {
 
 let error = false
 const constants = [
-  { name: 'OPTS_HA_BASE_URL', type: 'string', required: true },
-  { name: 'OPTS_HA_TOKEN', type: 'string', required: true },
   { name: 'OPTS_HA_CHAT_IDS_FILTER', type: 'string', defaultValue: 'GROUP' },
   { name: 'OPTS_HA_DEFAULT_TO', type: 'string' },
   { name: 'OPTS_HA_DEFAULT_IDD', type: 'number' },
@@ -77,10 +75,10 @@ const client = new Client({
 function request ({ url, headers, ...o }) {
   return axios({
     method: 'POST',
-    url: new URL(url, constants.OPTS_HA_BASE_URL).href,
+    url: new URL(url, 'http://supervisor/core/').href,
     ...o,
     headers: {
-      authorization: 'Bearer ' + constants.OPTS_HA_TOKEN,
+      authorization: 'Bearer ' + process.env.SUPERVISOR_TOKEN,
       ['content-type']: 'application/json',
       ...headers
     },
@@ -92,7 +90,7 @@ client.on('qr', qr => {
 
   qrcode.toDataURL(qr, (err, url) => {
     request({
-      url: '/api/services/persistent_notification/create',
+      url: 'api/services/persistent_notification/create',
       data: {
         notification_id: 'whatsapp_qrcode',
         title: 'WhatsApp - Link your device',
@@ -176,7 +174,7 @@ function get_chat_ids ({ body: { list = constants.OPTS_HA_CHAT_IDS_FILTER } }, r
 
   client.getChats().then(items => {
     request({
-      url: '/api/services/persistent_notification/create',
+      url: 'api/services/persistent_notification/create',
       data: {
         notification_id: 'whatsapp_chatIds',
         title: 'WhatsApp - Chat IDs',
