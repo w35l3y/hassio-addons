@@ -53,7 +53,7 @@ _For more details:_
 4. Call the service `hassio.addon_stdin`
 
 Currently, these are the only acceptable types:
-* `chatIds`: by default, retrieves the list of all your active groups in the log of the add-on in order to get the `chatId` of groups.
+* `chatIds`: by default, prints in the Notification bar the list of all your active `chatId` groups
 * `message`: sends a message from your account to someone else
 
 Example 1:
@@ -63,8 +63,10 @@ data:
   addon: c50d1fa4_whatsapp
   input:
     type: chatIds
+    value:
+      list: ALL # GROUP by default
 ```
-It will list the chatIds in the Log tab.
+It will list the chatIds in the Notification bar.
 
 Example 2:
 ```
@@ -74,12 +76,14 @@ data:
   input:
     type: message
     value:
-      to: nnnnnnnnnnnn  # chatId (*)
+      to: nnnnnnnnnnnn  # receiver chatId (*)
       body: your message goes here
 ```
 (*) If you want to send a message to a group, then call "chatIds" to identity what is its `chatId`.<br />
 contact `chatId` usually is composed of IDD + DDD + PHONE NUMBER (numbers only) followed by "@c.us"<br />
+If you have a brazilian phone number like: +55 (11) 988-888-888, then the `chatId` will be "551188888888@c.us" for old accounts and "5511*9*88888888@c.us" for new accounts
 group `chatId` doesn't seem to follow a pattern except that ends with "@g.us"<br />
+If you aren't sure about what `chatId` to inform, then call the example 1 first.
 
 [![Open your Home Assistant instance and show your service developer tools.](https://my.home-assistant.io/badges/developer_services.svg)](https://my.home-assistant.io/redirect/developer_services/)
 

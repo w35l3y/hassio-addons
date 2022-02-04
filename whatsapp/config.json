@@ -1,6 +1,6 @@
 {
   "name": "WhatsApp",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "slug": "whatsapp",
   "description": "WhatsApp for Home Assistant",
   "url": "https://github.com/w35l3y/hassio-addons/tree/main/whatsapp",
@@ -26,6 +26,7 @@
       { "name": "OPTS_HA_CHAT_IDS_FILTER", "value": "GROUP" },
       { "name": "OPTS_HA_RETRY_QUEUE", "value": "true" },
       { "name": "OPTS_HA_NEW_SESSION", "value": "false" },
+      { "name": "OPTS_HA_DEBUG", "value": "false" },
       { "name": "OPTS_HA_DEFAULT_IDD", "value": "" },
       { "name": "OPTS_HA_DEFAULT_DDD", "value": "" },
       { "name": "OPTS_HA_DEFAULT_TO", "value": "" }

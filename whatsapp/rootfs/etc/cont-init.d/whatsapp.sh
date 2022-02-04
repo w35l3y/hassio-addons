@@ -10,5 +10,8 @@ for var in $(bashio::config 'env_vars|keys'); do
 done
 
 node --version
+which -a node
 npm --version
+which -a npm
 chromium-browser --version
+which -a chromium-browser

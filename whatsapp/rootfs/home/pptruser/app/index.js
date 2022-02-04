@@ -14,7 +14,8 @@ const constants = [
   { name: 'OPTS_HA_DEFAULT_IDD', type: 'number' },
   { name: 'OPTS_HA_DEFAULT_DDD', type: 'number' },
   { name: 'OPTS_HA_NEW_SESSION', type: 'bool', defaultValue: 'false' },
-  { name: 'OPTS_HA_RETRY_QUEUE', type: 'bool', defaultValue: 'true' }
+  { name: 'OPTS_HA_RETRY_QUEUE', type: 'bool', defaultValue: 'true' },
+  { name: 'OPTS_HA_DEBUG', type: 'bool', defaultValue: 'false' }
 ].reduce((acc, { name, type, defaultValue, required }) => {
   let value = convert[type](process.env[name] || defaultValue || '')
 
@@ -56,12 +57,17 @@ console.log(new Date(), 'session', sessionData?'EXISTING':'NEW')
 const client = new Client({
   puppeteer: {
     authTimeout: 0, // https://github.com/pedroslopez/whatsapp-web.js/issues/935#issuecomment-952867521
+    qrTimeoutMs: 0,
     headless: true,
+    dumpio: constants.OPTS_HA_DEBUG,
     args: [
+      '--disable-software-rasterizer',
       '--disable-gpu',
+      '--single-process',
 //      '--disable-setuid-sandbox',
 //      '--no-sandbox',
 //      '--no-zygote',
+      '--ignore-gpu-blocklist',
       '--disable-dev-shm-usage'
     ]
   },
@@ -164,13 +170,26 @@ client.initialize()
 
 //////////////////////// SERVER
 
-function get_chat_ids (req, res) {
+function get_chat_ids ({ body: { list = constants.OPTS_HA_CHAT_IDS_FILTER } }, res) {
   res.status(202).end()
+  console.log("chat_ids", { list })
 
-  client.getChats().then(list => {
-    console.log('chat_ids', list
-      .filter(({ isGroup, isReadOnly }) => (constants.OPTS_HA_CHAT_IDS_FILTER !== 'GROUP' || isGroup) && !isReadOnly)
-      .map(({ id, name }) => ([id._serialized, name])))
+  client.getChats().then(items => {
+    request({
+      url: '/api/services/persistent_notification/create',
+      data: {
+        notification_id: 'whatsapp_chatIds',
+        title: 'WhatsApp - Chat IDs',
+        message: "<pre>" + items
+          .filter(({ isGroup, isReadOnly }) => (list.toUpperCase() !== 'GROUP' || isGroup) && !isReadOnly)
+          .sort((a, b) => -(a.isGroup > b.isGroup) || +(a.isGroup !== b.isGroup) || -(a.name < b.name) || +(a.name !== b.name))
+          .map(({ id, name }) => ([id._serialized, name].join("\t"))).join("<br />") + "</pre>"
+      }
+    })
+  }, err => {
+    console.log(new Date(), "error", err)
+    console.log(new Date(), 'reconnecting')
+    client.initialize()
   })
 }
 
