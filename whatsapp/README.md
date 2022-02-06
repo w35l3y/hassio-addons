@@ -44,7 +44,7 @@ Currently, these are the only acceptable types:
 * `chatIds`: by default, prints in the Notification bar the list of all your active `chatId` groups
 * `message`: sends a message from your account to someone else
 
-Example 1:
+#### Example 1
 ```
 service: hassio.addon_stdin
 data:
@@ -60,7 +60,7 @@ _For more details:_
 
 - https://docs.wwebjs.dev/Client.html#getChats
 
-Example 2:
+#### Example 2
 ```
 service: hassio.addon_stdin
 data:
@@ -71,11 +71,11 @@ data:
       to: nnnnnnnnnnnn  # receiver chatId (*)
       body: Your message goes here
 ```
-(*) If you want to send a message to a group, then call "chatIds" to identity what is its `chatId`.<br />
+(\*) If you want to send a message to a group, then call "chatIds" to identity what is its `chatId`.<br />
 contact `chatId` usually is composed of IDD + DDD + PHONE NUMBER (numbers only) followed by "@c.us"<br />
-If you have a brazilian phone number like: +55 (11) 988-888-888, then the `chatId` will be "551188888888@c.us" for old accounts and "5511*9*88888888@c.us" for new accounts
+If you have a brazilian phone number like: +55 (11) 988-888-888, then the `chatId` will be `551188888888@c.us` for old accounts and `5511988888888@c.us` for new accounts<br />
 group `chatId` doesn't seem to follow a pattern except that ends with "@g.us"<br />
-If you aren't sure about what `chatId` to inform, then call the example 1 first.
+If you aren't sure about what `chatId` to inform, then call the [Example 1](#example-1) first.
 
 <img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-2-simple.jpg" title="Example of simple message" height="100" />
 
@@ -83,7 +83,7 @@ _For more details:_
 
 - https://docs.wwebjs.dev/Client.html#sendMessage
 
-Example 3:
+#### Example 3
 ```
 service: hassio.addon_stdin
 data:
@@ -104,7 +104,7 @@ _For more details:_
 
 - https://docs.wwebjs.dev/MessageMedia.html#.fromUrl
 
-Example 4:
+#### Example 4
 ```
 service: hassio.addon_stdin
 data:
@@ -121,7 +121,7 @@ _For more details:_
 
 - https://docs.wwebjs.dev/MessageMedia.html#.fromFilePath
 
-Example 5:
+#### Example 5
 ```
 service: hassio.addon_stdin
 data:
@@ -141,7 +141,7 @@ _For more details:_
 
 - https://docs.wwebjs.dev/Location.html
 
-Example 6:
+#### Example 6
 ```
 service: hassio.addon_stdin
 data:
@@ -165,7 +165,7 @@ _For more details:_
 
 - https://docs.wwebjs.dev/Buttons.html
 
-Example 7:
+#### Example 7
 ```
 service: hassio.addon_stdin
 data:
@@ -199,7 +199,7 @@ _For more details:_
 
 [![Open your Home Assistant instance and show your service developer tools.](https://my.home-assistant.io/badges/developer_services.svg)](https://my.home-assistant.io/redirect/developer_services/)
 
-Example 8:
+#### Example 8
 ```
 - alias: "Receiving commands from WhatsApp to Alexa"
   trigger:
@@ -230,7 +230,11 @@ Example 8:
 ```
 Example of automation that is triggered by an event named `whatsapp_message` and sent to Alexa
 
-Example 9:
+_For more details:_
+
+- https://docs.wwebjs.dev/global.html#MessageSendOptions
+
+#### Example 9
 ```
 - alias: "Receiving location request from WhatsApp"
   trigger:
@@ -256,10 +260,6 @@ Example 9:
             description: "Party Location"
 ```
 Example of automation that is triggered by an event named `whatsapp_message` and sent back to WhatsApp
-
-_For more details:_
-
-- https://docs.wwebjs.dev/global.html#MessageSendOptions
 
 ## Common errors
 
