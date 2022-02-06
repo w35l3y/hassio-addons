@@ -56,6 +56,10 @@ data:
 ```
 It will list the chatIds in the Notification bar.
 
+_For more details:_
+
+- https://docs.wwebjs.dev/Client.html#getChats
+
 Example 2:
 ```
 service: hassio.addon_stdin
@@ -65,7 +69,7 @@ data:
     type: message
     value:
       to: nnnnnnnnnnnn  # receiver chatId (*)
-      body: your message goes here
+      body: Your message goes here
 ```
 (*) If you want to send a message to a group, then call "chatIds" to identity what is its `chatId`.<br />
 contact `chatId` usually is composed of IDD + DDD + PHONE NUMBER (numbers only) followed by "@c.us"<br />
@@ -73,7 +77,189 @@ If you have a brazilian phone number like: +55 (11) 988-888-888, then the `chatI
 group `chatId` doesn't seem to follow a pattern except that ends with "@g.us"<br />
 If you aren't sure about what `chatId` to inform, then call the example 1 first.
 
+![Example of simple message][example-2-simple]
+
+_For more details:_
+
+- https://docs.wwebjs.dev/Client.html#sendMessage
+
+Example 3:
+```
+service: hassio.addon_stdin
+data:
+  addon: c50d1fa4_whatsapp
+  input:
+    type: message
+    value:
+      to: nnnnnnnnnnnn  # receiver chatId
+      url: https://s.gravatar.com/avatar/81269f79d21e612f9f307d16b09ee82b?s=100
+      options:
+        unsafeMime: true
+```
+Sends a file based on the url
+
+![Example of attachment][example-3-url]
+
+_For more details:_
+
+- https://docs.wwebjs.dev/MessageMedia.html#.fromUrl
+
+Example 4:
+```
+service: hassio.addon_stdin
+data:
+  addon: c50d1fa4_whatsapp
+  input:
+    type: message
+    value:
+      to: nnnnnnnnnnnn  # receiver chatId
+      filePath: ...
+```
+Sends a file based on the filePath
+
+_For more details:_
+
+- https://docs.wwebjs.dev/MessageMedia.html#.fromFilePath
+
+Example 5:
+```
+service: hassio.addon_stdin
+data:
+  addon: c50d1fa4_whatsapp
+  input:
+    type: message
+    value:
+      to: nnnnnnnnnnnn  # receiver chatId
+      latitude: 51.477928
+      longitude: -0.001545
+```
+Sends location
+
+![Example of location][example-5-location]
+
+_For more details:_
+
+- https://docs.wwebjs.dev/Location.html
+
+Example 6:
+```
+service: hassio.addon_stdin
+data:
+  addon: c50d1fa4_whatsapp
+  input:
+    type: message
+    value:
+      to: nnnnnnnnnnnn  # receiver chatId
+      title: Title
+      body: Content
+      footer: Footer
+      buttons:
+        - body: Button A
+        - body: Button B
+```
+Sends a message with 2 buttons (limit = 3 buttons)
+
+![Example of buttons][example-6-buttons]
+
+_For more details:_
+
+- https://docs.wwebjs.dev/Buttons.html
+
+Example 7:
+```
+service: hassio.addon_stdin
+data:
+  addon: c50d1fa4_whatsapp
+  input:
+    type: message
+    value:
+      to: nnnnnnnnnnnn  # receiver chatId
+      title: Title
+      body: Content
+      footer: Footer (it is in the API, but doesn't show up)
+      buttonText: Options
+      sections:
+        - title: Section A
+          rows:
+            - title: Option A.1
+            - title: Option A.2
+        - title: Section B
+          rows:
+            - title: Option B.1
+            - title: Option B.2
+```
+Sends a message with a list of sections
+
+![Example of sections closed][example-7-sections-closed]
+![Example of sections opened][example-7-sections-opened]
+
+_For more details:_
+
+- https://docs.wwebjs.dev/List.html
+
 [![Open your Home Assistant instance and show your service developer tools.](https://my.home-assistant.io/badges/developer_services.svg)](https://my.home-assistant.io/redirect/developer_services/)
+
+Example 8:
+```
+- alias: "Receiving commands from WhatsApp to Alexa"
+  trigger:
+    platform: event
+    event_type: whatsapp_message
+    event_data:
+      tags:
+        - ALEXA_REQUEST
+        - ALEXA_REQUEST_WHITELIST
+    context:
+      user_id: !secret supervisor_user_id
+  action:
+    - service: media_player.play_media
+      data:
+        entity_id: "media_player.my_echo_dot"
+        media_content_type: custom
+        media_content_id: '{{ trigger.event.data.body }}'
+    - service: hassio.addon_stdin
+      data:
+        addon: c50d1fa4_whatsapp
+        input:
+          type: message
+          value:
+            to: ALEXA_RESPONSE
+            body: 'Received command: {{ trigger.event.data.body }}'
+            options:
+              quotedMessageId: '{{ trigger.event.data.messageId }}'
+```
+Example of automation that is triggered by an event named `whatsapp_message` and sent to Alexa
+
+Example 9:
+```
+- alias: "Receiving location request from WhatsApp"
+  trigger:
+    platform: event
+    event_type: whatsapp_message
+    event_data:
+      tags:
+        - LOCATION_REQUEST
+        - LOCATION_REQUEST_WHITELIST
+      body: "!location"
+    context:
+      user_id: !secret supervisor_user_id
+  action:
+    - service: hassio.addon_stdin
+      data:
+        addon: c50d1fa4_whatsapp
+        input:
+          type: message
+          value:
+            to: '{{ trigger.event.data.author }}'
+            latitude: 51.477928
+            longitude: -0.001545
+            description: "Party Location"
+```
+Example of automation that is triggered by an event named `whatsapp_message` and sent back to WhatsApp
+
+_For more details:_
+
+- https://docs.wwebjs.dev/global.html#MessageSendOptions
 
 ## Common errors
 
@@ -104,3 +290,9 @@ If you aren't sure about what `chatId` to inform, then call the example 1 first.
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2022
 [project-stage-shield]: https://img.shields.io/badge/Project%20Stage-Development-yellowgreen.svg
 [semver]: http://semver.org/spec/v2.0.0.htm
+[example-2-simple]: https://github.com/w35l3y/hassio-addons/raw/main/cloudflare_tunnel/resources/img/example-2-simple.jpg
+[example-3-url]: https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-3-url.jpg
+[example-5-location]: https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-5-location.jpg
+[example-6-buttons]: https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-6-buttons.jpg
+[example-7-sections-closed]: https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-7-sections-closed.jpg
+[example-7-sextions-opened]: https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-7-sextions-opened.jpg

@@ -1,5 +1,6 @@
 const FALSY_VALUES = ['false', 'no', '0', 'null', 'undefined']
 const convert = {
+  'json': v => JSON.parse(v),
   'string': v => v || "",
   'number': v => v || "",
   'bool': v => v && !FALSY_VALUES.includes(v.toLowerCase().trim()) || false
@@ -7,17 +8,19 @@ const convert = {
 
 let error = false
 const constants = [
+  { name: 'OPTS_HA_EVENT_TYPE', type: 'string', defaultValue: 'whatsapp_message' },
   { name: 'OPTS_HA_CHAT_IDS_FILTER', type: 'string', defaultValue: 'GROUP' },
   { name: 'OPTS_HA_DEFAULT_TO', type: 'string' },
   { name: 'OPTS_HA_DEFAULT_IDD', type: 'number' },
   { name: 'OPTS_HA_DEFAULT_DDD', type: 'number' },
+  { name: 'OPTS_HA_TAGS', type: 'json', defaultValue: '[]' },
   { name: 'OPTS_HA_NEW_SESSION', type: 'bool', defaultValue: 'false' },
   { name: 'OPTS_HA_RETRY_QUEUE', type: 'bool', defaultValue: 'true' },
   { name: 'OPTS_HA_DEBUG', type: 'bool', defaultValue: 'false' }
 ].reduce((acc, { name, type, defaultValue, required }) => {
   let value = convert[type](process.env[name] || defaultValue || '')
 
-  if (required && !value) {
+  if (required && (value === null || value === undefined)) {
     error = true
     console.log(name, 'Required')
   }
@@ -37,7 +40,7 @@ if (error) {
 const qrcode = require('qrcode')
 const axios = require('axios')
 const fs = require('fs')
-const { Client } = require('whatsapp-web.js')
+const { Client, Buttons, MessageMedia, Location, List } = require('whatsapp-web.js')
 const SESSION_FILE_PATH_R = '/data/session.json'
 const SESSION_FILE_PATH_W = __dirname + '/session.json'
 
@@ -61,11 +64,11 @@ const client = new Client({
     args: [
       '--disable-software-rasterizer',
       '--disable-gpu',
-      '--single-process',
+//      '--single-process', // dá falha num tal de X11 e não abre o navegador
 //      '--disable-setuid-sandbox',
 //      '--no-sandbox',
 //      '--no-zygote',
-      '--ignore-gpu-blocklist',
+//      '--ignore-gpu-blocklist',
       '--disable-dev-shm-usage'
     ]
   },
@@ -83,6 +86,28 @@ function request ({ url, headers, ...o }) {
       ...headers
     },
   })
+}
+
+function get_chatId_by_tag(item) {
+  for (const { name, values } of constants.OPTS_HA_TAGS) {
+    if (item === name) {
+      return values[0]
+    }
+  }
+
+  return item
+}
+
+function get_tags({ from, author }) {
+  let output = []
+
+  for (const { name, values } of constants.OPTS_HA_TAGS) {
+    if (values.includes(from) || values.includes(author)) {
+      output.push(name)
+    }
+  }
+
+  return output
 }
 
 client.on('qr', qr => {
@@ -117,15 +142,18 @@ client.on('authenticated', session => {
 
 async function send_queue() {
   if (queue.length) {
-    return client.sendMessage(queue[0].to, queue[0].body).then(() => {
+    const { to, body, options } = queue[0]
+
+    return client.sendMessage(to, body, options).then(() => {
       queue.shift()
       setTimeout(send_queue, 1000)
       return 0
-    }).catch(err => {
+    }, err => {
       console.log(new Date(), "send_queue", "error", err)
       return 1
     })
   }
+
   return 0
 }
 
@@ -143,25 +171,32 @@ client.on('disconnected', reason => {
   console.log(new Date(), 'disconnected', reason)
 })
 
-//client.on('message', message => {
-//	if (message.body === '!ping') {
-//    console.log(message)
-//		client.sendMessage(message.from, 'pong')
-//	}
-//})
+function process_message({ body, type, ...o }) {
+  if (type === 'chat') {
+    let tags = get_tags(o)
+    console.log("process", tags, o.from, o.author, body)
+    if (2 <= tags.length) {
+      request({
+        url: 'api/events/' + constants.OPTS_HA_EVENT_TYPE,
+        data: {
+          author: o.author,
+          messageId: o.id._serialized,
+          tags,
+          body
+        }
+      })
+    }
+  }
+}
 
-//client.on('message_ack', (message, ack) => {
-/*
-    == ACK VALUES ==
-    ACK_ERROR: -1
-    ACK_PENDING: 0
-    ACK_SERVER: 1
-    ACK_DEVICE: 2
-    ACK_READ: 3
-    ACK_PLAYED: 4
-*/
-//  console.log(new Date(), 'message_ack', message, ack, message.fromMe)
-//})
+client.on('message_create', message => {
+  if (message.fromMe) {
+    let { from, to } = message
+    process_message({ ...message, from: to, author: from })
+  } else {
+    process_message(message)
+  }
+})
 
 console.log(new Date(), 'initialize')
 client.initialize()
@@ -191,16 +226,42 @@ function get_chat_ids ({ body: { list = constants.OPTS_HA_CHAT_IDS_FILTER } }, r
   })
 }
 
-function post_message ({ body: { to, body } }, res) {
-  if (!body) {
-    res.status(400).send({ messages: [ { type: "required.parameter", parameters: { name: "body" } } ] })
-    return
+async function get_body({ mimetype, filePath, url, body, data = body, options = {}, filename = options.filename }) {
+  if (mimetype) {
+    return new MessageMedia(mimetype, data, filename)
+  } else if (filePath) {
+    return MessageMedia.fromFilePath(filePath)
+  } else if (url) {
+    return await MessageMedia.fromUrl(url, options)
+  } else if (body && (body.mimetype || body.filePath || body.url)) {
+    return await get_body(body)
   }
-  res.status(202).end()
+  return body
+}
 
+async function post_message ({ body: {
+  latitude,
+  longitude,
+  sections,
+  buttons,
+  mimetype,
+  filePath,
+  url,
+  body,
+  to,
+  options = {},
+  data = body,
+  filename = options.filename,
+  description = body,
+  title,
+  footer,
+  messageOptions,
+  buttonText,
+} }, res) {
   if (!to) {
     to = constants.OPTS_HA_DEFAULT_TO
   }
+
   if (/^(\d{12,13})(?:@c\.us)?$/.test(to)) {
     to = RegExp.$1 + "@c.us"
   } else if (/^(\d{10,11})(?:@c\.us)?$/.test(to)) {
@@ -211,13 +272,33 @@ function post_message ({ body: { to, body } }, res) {
     to = RegExp.$1 + "@g.us"
   }
 
-  console.log("message", { to, body })
-  client.sendMessage(to, body).catch(err => {
+  to = get_chatId_by_tag(to)
+
+  if (latitude && longitude) {
+    body = new Location(latitude, longitude, description)
+  } else if (sections && sections.length) {
+    body = new List(body, buttonText, sections, title, footer)
+  } else {
+    body = await get_body({ mimetype, filePath, url, options, body, data, filename })
+
+    if (buttons && buttons.length) {
+      body = new Buttons(body, buttons, title, footer)
+    }
+  }
+
+  if (!body) {
+    res.status(400).send({ messages: [ { type: "required.parameter", parameters: { name: "body" } } ] })
+    return
+  }
+  res.status(202).end()
+
+  console.log("message", { to, body, options: messageOptions })
+  return client.sendMessage(to, body, messageOptions).catch(err => {
     console.log(new Date(), "error", err)
     if (!constants.OPTS_HA_RETRY_QUEUE) {
       console.log(new Date(), 'no queue')
     } else if (-1 === queue.findIndex(item => item.to === to && item.body === body)) {
-      queue.push({ to, body })
+      queue.push({ to, body, options: messageOptions })
       console.log(new Date(), 'reconnecting')
       client.initialize()
     }

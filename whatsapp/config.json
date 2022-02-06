@@ -1,6 +1,6 @@
 {
   "name": "WhatsApp",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "slug": "whatsapp",
   "description": "WhatsApp for Home Assistant",
   "url": "https://github.com/w35l3y/hassio-addons/tree/main/whatsapp",
@@ -13,6 +13,7 @@
   "homeassistant_api": true,
   "stdin": true,
   "environment": {
+    "MAX_CONCURRENT_SESSIONS": "1",
     "NODE_ENV": "production",
     "PORT": "8099"
   },
@@ -20,19 +21,31 @@
     "8099/tcp": null
   },
   "options": {
+    "tags": [{
+      "name": "HOME",
+      "values": ["group_chatId_that_represents_home_group"]
+    }, {
+      "name": "HOME_WHITELIST",
+      "values": ["whitelisted_contact_chatId"]
+    }],
     "env_vars": [
+      { "name": "OPTS_HA_EVENT_TYPE", "value": "whatsapp_message" },
       { "name": "OPTS_HA_CHAT_IDS_FILTER", "value": "GROUP" },
       { "name": "OPTS_HA_RETRY_QUEUE", "value": "true" },
       { "name": "OPTS_HA_NEW_SESSION", "value": "false" },
       { "name": "OPTS_HA_DEBUG", "value": "false" },
       { "name": "OPTS_HA_DEFAULT_IDD", "value": "" },
       { "name": "OPTS_HA_DEFAULT_DDD", "value": "" },
-      { "name": "OPTS_HA_DEFAULT_TO", "value": "" }
+      { "name": "OPTS_HA_DEFAULT_TO", "value": "HOME" }
     ]
   },
   "schema": {
+    "tags": [{
+      "name": "match(^[A-Z0-9_]+$)",
+      "values": ["str"]
+    }],
     "env_vars": [{
-      "name": "match(^OPTS_HA_([A-Z0-9_])+$)",
+      "name": "match(^OPTS_HA_[A-Z0-9_]+$)",
       "value": "str"
     }]
   }
