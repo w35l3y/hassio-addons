@@ -75,9 +75,11 @@ data:
 contact `chatId` usually is composed of IDD + DDD + PHONE NUMBER (numbers only) followed by "@c.us"<br />
 If you have a brazilian phone number like: +55 (11) 988-888-888, then the `chatId` will be `551188888888@c.us` for old accounts and `5511988888888@c.us` for new accounts<br />
 group `chatId` doesn't seem to follow a pattern except that ends with "@g.us"<br />
-If you aren't sure about what `chatId` to inform, then call the [Example 1](#example-1) first.
+If you aren't sure about what `chatId` to inform, then call the [Example 1](#example-1) first.<br />
+You also may inform a tag that is in the Configuration tab to represent the `chatId`.<br />
+If the tag has more than 1 `chatId`, then the first one will be considered.
 
-<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-2-simple.jpg" title="Example of simple message" height="100" />
+<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-2-simple.jpg" title="Example of simple message" height="150" />
 
 _For more details:_
 
@@ -98,7 +100,7 @@ data:
 ```
 Sends a file based on the url
 
-<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-3-url.jpg" title="Example of attachment" height="100" />
+<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-3-url.jpg" title="Example of attachment" height="150" />
 
 _For more details:_
 
@@ -135,7 +137,7 @@ data:
 ```
 Sends location
 
-<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-5-location.jpg" title="Example of location" height="100" />
+<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-5-location.jpg" title="Example of location" height="150" />
 
 _For more details:_
 
@@ -159,7 +161,7 @@ data:
 ```
 Sends a message with 2 buttons (limit = 3 buttons)
 
-<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-6-buttons.jpg" title="Example of buttons" height="100" />
+<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-6-buttons.jpg" title="Example of buttons" height="150" />
 
 _For more details:_
 
@@ -190,8 +192,8 @@ data:
 ```
 Sends a message with a list of sections
 
-<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-7-sections-closed.jpg" title="Example of sections closed" height="100" />
-<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-7-sextions-opened.jpg" title="Example of sections opened" height="100" />
+<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-7-sections-closed.jpg" title="Example of sections closed" height="150" />
+<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-7-sextions-opened.jpg" title="Example of sections opened" height="150" />
 
 _For more details:_
 
@@ -260,6 +262,37 @@ _For more details:_
             description: "Party Location"
 ```
 Example of automation that is triggered by an event named `whatsapp_message` and sent back to WhatsApp
+
+## Configuration
+
+* tags (list)
+  * name (string)
+    * unique identifier name
+    * must be upper case
+    * may contain A-Z, 0-9 and _
+  * values (list)
+    * list of chatIds
+    * if a tag is referenced in the "to" attribute during sending a message, then the first chatId of the list is considered
+* env_vars (list)
+  * name (string)
+    * unique identifier name
+    * must be upper case
+    * may contain A-Z, 0-9 and _
+    * starts with OPTS_HA_
+  * value (string)
+    * value of the variable
+
+| env_vars (name) | type | default | description |
+| --- | --- | --- | --- |
+| OPTS_HA_EVENT_TYPE | string | whatsapp_message | event type that is sent when message is received.<br />received messages must match at least 2 tags to send an event.<br />usually, the tags used in the automation trigger represents the group that received the message and the author of the message. |
+| OPTS_HA_CHAT_IDS_FILTER | string | GROUP | default filter that is used to list chat ids. |
+| OPTS_HA_DEFAULT_TO | string | *empty* | default receiver chatId or tag to send message when none is defined. |
+| OPTS_HA_DEFAULT_IDD | number | *empty* | default IDD when the chatId informed doesn't include IDD.<br />it is always recommended to inform the whole chatId and not depend on this value. |
+| OPTS_HA_DEFAULT_DDD | number | *empty* | defined DDD when the chatId informed doesn't include IDD+DDD.<br />it is always recommended to inform the whole chatId and not depend on this value. |
+| OPTS_HA_TAGS | json | [] | internal use |
+| OPTS_HA_NEW_SESSION | boolean | false | force new session on every start. |
+| OPTS_HA_RETRY_QUEUE | boolean | true | tries to resend the message in case of an error. |
+| OPTS_HA_DEBUG | boolean | false | enables detailed log. |
 
 ## Common errors
 
