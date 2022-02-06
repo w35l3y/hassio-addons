@@ -77,7 +77,7 @@ If you have a brazilian phone number like: +55 (11) 988-888-888, then the `chatI
 group `chatId` doesn't seem to follow a pattern except that ends with "@g.us"<br />
 If you aren't sure about what `chatId` to inform, then call the example 1 first.
 
-![Example of simple message][example-2-simple]
+<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-2-simple.jpg" title="Example of simple message" height="100" />
 
 _For more details:_
 
@@ -98,7 +98,7 @@ data:
 ```
 Sends a file based on the url
 
-![Example of attachment][example-3-url]
+<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-3-url.jpg" title="Example of attachment" height="100" />
 
 _For more details:_
 
@@ -135,7 +135,7 @@ data:
 ```
 Sends location
 
-![Example of location][example-5-location]
+<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-5-location.jpg" title="Example of location" height="100" />
 
 _For more details:_
 
@@ -159,7 +159,7 @@ data:
 ```
 Sends a message with 2 buttons (limit = 3 buttons)
 
-![Example of buttons][example-6-buttons]
+<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-6-buttons.jpg" title="Example of buttons" height="100" />
 
 _For more details:_
 
@@ -190,8 +190,8 @@ data:
 ```
 Sends a message with a list of sections
 
-![Example of sections closed][example-7-sections-closed]
-![Example of sections opened][example-7-sections-opened]
+<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-7-sections-closed.jpg" title="Example of sections closed" height="100" />
+<img src="https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-7-sextions-opened.jpg" title="Example of sections opened" height="100" />
 
 _For more details:_
 
@@ -290,9 +290,3 @@ _For more details:_
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2022
 [project-stage-shield]: https://img.shields.io/badge/Project%20Stage-Development-yellowgreen.svg
 [semver]: http://semver.org/spec/v2.0.0.htm
-[example-2-simple]: https://github.com/w35l3y/hassio-addons/raw/main/cloudflare_tunnel/resources/img/example-2-simple.jpg
-[example-3-url]: https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-3-url.jpg
-[example-5-location]: https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-5-location.jpg
-[example-6-buttons]: https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-6-buttons.jpg
-[example-7-sections-closed]: https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-7-sections-closed.jpg
-[example-7-sextions-opened]: https://github.com/w35l3y/hassio-addons/raw/main/whatsapp/resources/img/example-7-sextions-opened.jpg
