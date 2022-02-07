@@ -99,7 +99,7 @@ function get_chatId_by_tag(item) {
 }
 
 function get_tags({ from, author }) {
-  if (!author) {
+  if (!author || !from.endsWith("@g.us") || !author.endsWith("@c.us")) {
     return []
   }
 
@@ -107,13 +107,13 @@ function get_tags({ from, author }) {
   let author_tags = []
 
   for (const { name, values } of constants.OPTS_HA_TAGS) {
-    if (values.includes(from) && from.endsWith("@g.us")) {
+    if (values.includes(from)) {
       group_tags.push(name)
     }
   }
 
   for (const { name, values, group } of constants.OPTS_HA_TAGS) {
-    if (values.includes(author) && (!group || group_tags.includes(group)) && author.endsWith("@c.us")) {
+    if (values.includes(author) && (!group || group_tags.includes(group))) {
       author_tags.push(name)
     }
   }
