@@ -218,6 +218,9 @@ _For more details:_
         - ALEXA_REQUEST_WHITELIST
     context:
       user_id: !secret supervisor_user_id
+  condition:
+    condition: template
+    value_template: '{{ "ALEXA_REQUEST" in trigger.event.data.tags and "ALEXA_REQUEST_WHITELIST" in trigger.event.data.tags }}'
   action:
     - service: media_player.play_media
       data:
@@ -255,6 +258,9 @@ _For more details:_
       body: "!location"
     context:
       user_id: !secret supervisor_user_id
+  condition:
+    condition: template
+    value_template: '{{ "LOCATION_REQUEST" in trigger.event.data.tags and "LOCATION_REQUEST_WHITELIST" in trigger.event.data.tags and trigger.event.data.body == "!location" }}'
   action:
     - service: hassio.addon_stdin
       data:
