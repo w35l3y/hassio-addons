@@ -5,7 +5,7 @@ const convert = {
   'number': v => v || "",
   'bool': v => v && !FALSY_VALUES.includes(v.toLowerCase().trim()) || false
 }
-const isString => value => Object.prototype.toString.call(value) === '[object String]'
+const isString = value => Object.prototype.toString.call(value) === '[object String]'
 
 let error = false
 const constants = [
