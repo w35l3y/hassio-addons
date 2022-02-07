@@ -107,13 +107,13 @@ function get_tags({ from, author }) {
   let author_tags = []
 
   for (const { name, values } of constants.OPTS_HA_TAGS) {
-    if (values.includes(from)) {
+    if (values.includes(from) && from.endsWith("@g.us")) {
       group_tags.push(name)
     }
   }
 
   for (const { name, values, group } of constants.OPTS_HA_TAGS) {
-    if (values.includes(author) && (!group || group_tags.includes(group))) {
+    if (values.includes(author) && (!group || group_tags.includes(group)) && author.endsWith("@c.us")) {
       author_tags.push(name)
     }
   }
