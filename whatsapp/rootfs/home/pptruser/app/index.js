@@ -5,6 +5,7 @@ const convert = {
   'number': v => v || "",
   'bool': v => v && !FALSY_VALUES.includes(v.toLowerCase().trim()) || false
 }
+const isString => value => Object.prototype.toString.call(value) === '[object String]'
 
 let error = false
 const constants = [
@@ -158,9 +159,9 @@ client.on('authenticated', session => {
 
 async function send_queue() {
   if (queue.length) {
-    const { to, body, options } = queue[0]
+    const { chatId, content, options } = queue[0]
 
-    return client.sendMessage(to, body, options).then(() => {
+    return client.sendMessage(chatId, content, options).then(() => {
       queue.shift()
       setTimeout(send_queue, 1000)
       return 0
@@ -285,46 +286,43 @@ function get_id(v) {
 }
 
 async function post_message ({ body: {
-  messageOptions,
-
   chatId,
   content,
-  options = messageOptions,
-
-  // retrocompatibility (avoid using them because they may be removed in the future. instead, consider using "chatId", "content" and "options")
-  to = chatId,
-  latitude = content.latitude,
-  longitude = content.longitude,
-  sections = content.sections,
-  buttons = content.buttons,
-  mimetype = content.mimetype,
-  filePath = content.filePath,
-  url = content.url,
-  body = content.body || content,
-//  options = content.options,
-  data = body,
-  description = body,
-  filename = (content.options||{}).filename,
-  title = content.title,
-  footer = content.footer,
-  buttonText = content.buttonText,
+  options,
 } }, res) {
 
-  if (!to) {
-    to = constants.OPTS_HA_DEFAULT_TO
+  if (!chatId) {
+    chatId = constants.OPTS_HA_DEFAULT_TO
   }
 
-  if (/^(\d{12,13})(?:@c\.us)?$/.test(to)) {
-    to = RegExp.$1 + "@c.us"
-  } else if (/^(\d{10,11})(?:@c\.us)?$/.test(to)) {
-    to = constants.OPTS_HA_DEFAULT_IDD + RegExp.$1 + "@c.us"
-  } else if (/^(\d{8,9})(?:@c\.us)?$/.test(to)) {
-    to = constants.OPTS_HA_DEFAULT_IDD + "" + constants.OPTS_HA_DEFAULT_DDD + RegExp.$1 + "@c.us"
-  } else if (/^(\d{12,13}-\d{10})(?:@g\.us)?$/.test(to)) {
-    to = RegExp.$1 + "@g.us"
+  if (/^(\d{12,13})(?:@c\.us)?$/.test(chatId)) {
+    chatId = RegExp.$1 + "@c.us"
+  } else if (/^(\d{10,11})(?:@c\.us)?$/.test(chatId)) {
+    chatId = constants.OPTS_HA_DEFAULT_IDD + RegExp.$1 + "@c.us"
+  } else if (/^(\d{8,9})(?:@c\.us)?$/.test(chatId)) {
+    chatId = constants.OPTS_HA_DEFAULT_IDD + "" + constants.OPTS_HA_DEFAULT_DDD + RegExp.$1 + "@c.us"
+  } else if (/^(\d{12,13}-\d{10})(?:@g\.us)?$/.test(chatId)) {
+    chatId = RegExp.$1 + "@g.us"
   }
 
-  to = get_chatId_by_tag(to)
+  chatId = get_chatId_by_tag(chatId)
+
+  let {
+    latitude,
+    longitude,
+    sections,
+    buttons,
+    mimetype,
+    filePath,
+    url,
+    title,
+    footer,
+    buttonText,
+    body = (isString(content)?content:undefined),
+    data = body,
+    description = body,
+    filename = (content.options||{}).filename
+  } = content
 
   if (latitude && longitude) {
     body = new Location(latitude, longitude, description)
@@ -369,13 +367,13 @@ async function post_message ({ body: {
   }
   res.status(202).end()
 
-  console.log("message", { to, body, options: messageOptions })
-  return client.sendMessage(to, body, messageOptions).catch(err => {
+  console.log("message", { chatId, content, options })
+  return client.sendMessage(chatId, content, options).catch(err => {
     console.log(new Date(), "error", err)
     if (!constants.OPTS_HA_RETRY_QUEUE) {
       console.log(new Date(), 'no queue')
-    } else if (-1 === queue.findIndex(item => item.to === to && item.body === body)) {
-      queue.push({ to, body, options: messageOptions })
+    } else if (-1 === queue.findIndex(item => item.chatId === chatId && item.content === content)) {
+      queue.push({ chatId, content, options })
       console.log(new Date(), 'reconnecting')
       client.initialize()
     }
