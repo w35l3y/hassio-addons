@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][keepachangelog],
 and this project adheres to [Semantic Versioning][semver].
 
+## [1.1.0] - 2022-02-07
+
+### Added
+
+- Added message filtering (tags.filters)
+- Added related TAG (tags.group)
+- Added support to buttons_response
+
+### Changed
+
+- Now, the expected parameters for sending message are: chatId (used to be "to"), content (used to be "body") and options (used to be "messageOptions")
+
 ## [1.0.4] - 2022-02-06
 
 ### Added

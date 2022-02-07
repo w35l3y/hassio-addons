@@ -5,12 +5,13 @@
 for var in $(bashio::config "env_vars|keys"); do
     name=$(bashio::config "env_vars[${var}].name")
     value=$(bashio::config "env_vars[${var}].value")
-#    bashio::log.info "Setting ${name} to ${value}"
+    bashio::log.info "Setting ${name} to ${value}"
     printf "${value}" > /var/run/s6/container_environment/${name}
 done
 
 # https://stedolan.github.io/jq/manual/#tostring
 json=$(bashio::config "tags|tostring")
+bashio::log.info "Setting OPTS_HA_TAGS to ${json}"
 printf "${json}" > /var/run/s6/container_environment/OPTS_HA_TAGS
 
 node --version

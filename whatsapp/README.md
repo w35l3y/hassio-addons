@@ -68,8 +68,8 @@ data:
   input:
     type: message
     value:
-      to: nnnnnnnnnnnn  # receiver chatId (*)
-      body: Your message goes here
+      chatId: nnnnnnnnnnnn  # receiver chatId (*)
+      content: Your message goes here
 ```
 (\*) If you want to send a message to a group, then call "chatIds" to identity what is its `chatId`.<br />
 contact `chatId` usually is composed of IDD + DDD + PHONE NUMBER (numbers only) followed by "@c.us"<br />
@@ -93,10 +93,11 @@ data:
   input:
     type: message
     value:
-      to: nnnnnnnnnnnn  # receiver chatId
-      url: https://s.gravatar.com/avatar/81269f79d21e612f9f307d16b09ee82b?s=100
-      options:
-        unsafeMime: true
+      chatId: nnnnnnnnnnnn  # receiver chatId
+      content:
+        url: https://s.gravatar.com/avatar/81269f79d21e612f9f307d16b09ee82b?s=100
+        options:
+          unsafeMime: true
 ```
 Sends a file based on the url
 
@@ -114,8 +115,9 @@ data:
   input:
     type: message
     value:
-      to: nnnnnnnnnnnn  # receiver chatId
-      filePath: ...
+      chatId: nnnnnnnnnnnn  # receiver chatId
+      content:
+        filePath: ...
 ```
 Sends a file based on the filePath
 
@@ -131,9 +133,10 @@ data:
   input:
     type: message
     value:
-      to: nnnnnnnnnnnn  # receiver chatId
-      latitude: 51.477928
-      longitude: -0.001545
+      chatId: nnnnnnnnnnnn  # receiver chatId
+      content:
+        latitude: 51.477928
+        longitude: -0.001545
 ```
 Sends location
 
@@ -151,13 +154,14 @@ data:
   input:
     type: message
     value:
-      to: nnnnnnnnnnnn  # receiver chatId
-      title: Title
-      body: Content
-      footer: Footer
-      buttons:
-        - body: Button A
-        - body: Button B
+      chatId: nnnnnnnnnnnn  # receiver chatId
+      content:
+        title: Title
+        body: Content
+        footer: Footer
+        buttons:
+          - body: Button A
+          - body: Button B
 ```
 Sends a message with 2 buttons (limit = 3 buttons)
 
@@ -175,20 +179,21 @@ data:
   input:
     type: message
     value:
-      to: nnnnnnnnnnnn  # receiver chatId
-      title: Title
-      body: Content
-      footer: Footer (it is in the API, but doesn't show up)
-      buttonText: Options
-      sections:
-        - title: Section A
-          rows:
-            - title: Option A.1
-            - title: Option A.2
-        - title: Section B
-          rows:
-            - title: Option B.1
-            - title: Option B.2
+      chatId: nnnnnnnnnnnn  # receiver chatId
+      content:
+        title: Title
+        body: Content
+        footer: Footer (it is in the API, but doesn't show up)
+        buttonText: Options
+        sections:
+          - title: Section A
+            rows:
+              - title: Option A.1
+              - title: Option A.2
+          - title: Section B
+            rows:
+              - title: Option B.1
+              - title: Option B.2
 ```
 Sends a message with a list of sections
 
@@ -225,8 +230,9 @@ _For more details:_
         input:
           type: message
           value:
-            to: ALEXA_RESPONSE
-            body: 'Received command: {{ trigger.event.data.body }}'
+            chatId: ALEXA_RESPONSE
+            content:
+              body: 'Received command: {{ trigger.event.data.body }}'
             options:
               quotedMessageId: '{{ trigger.event.data.messageId }}'
 ```
@@ -256,10 +262,11 @@ _For more details:_
         input:
           type: message
           value:
-            to: '{{ trigger.event.data.author }}'
-            latitude: 51.477928
-            longitude: -0.001545
-            description: "Party Location"
+            chatId: '{{ trigger.event.data.author }}'
+            content:
+              latitude: 51.477928
+              longitude: -0.001545
+              description: "Party Location"
 ```
 Example of automation that is triggered by an event named `whatsapp_message` and sent back to WhatsApp
 
@@ -270,6 +277,11 @@ Example of automation that is triggered by an event named `whatsapp_message` and
     * unique identifier name
     * must be upper case
     * may contain A-Z, 0-9 and _
+  * group (string)
+    * name of TAG related to the current TAG
+  * filters (list)
+    * list of filters that should be applied to the message
+    * current acceptable values are "tolower" and "toupper"
   * values (list)
     * list of chatIds
     * if a tag is referenced in the "to" attribute during sending a message, then the first chatId of the list is considered

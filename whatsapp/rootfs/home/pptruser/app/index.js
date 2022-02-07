@@ -99,15 +99,31 @@ function get_chatId_by_tag(item) {
 }
 
 function get_tags({ from, author }) {
-  let output = []
+  if (!author) {
+    return []
+  }
+
+  let group_tags = []
+  let author_tags = []
 
   for (const { name, values } of constants.OPTS_HA_TAGS) {
-    if (values.includes(from) || values.includes(author)) {
-      output.push(name)
+    if (values.includes(from)) {
+      group_tags.push(name)
     }
   }
 
-  return output
+  for (const { name, values, group } of constants.OPTS_HA_TAGS) {
+    if (values.includes(author) && (!group || group_tags.includes(group))) {
+      author_tags.push(name)
+    }
+  }
+
+  if (author_tags.length && !group_tags.length) {
+    console.warn("Only contact tags were found", author_tags)
+    return []
+  }
+
+  return [...group_tags, ...author_tags]
 }
 
 client.on('qr', qr => {
@@ -171,20 +187,43 @@ client.on('disconnected', reason => {
   console.log(new Date(), 'disconnected', reason)
 })
 
-function process_message({ body, type, ...o }) {
-  if (type === 'chat') {
+const PROCESS_TYPES = ['chat', 'buttons_response']
+const MESSAGE_FILTERS = {
+  "tolower": v => v.toLowerCase(),
+  "toupper": v => v.toUpperCase(),
+}
+
+function filtered_body(text, tags) {
+  let output = text
+
+  for (const { name, filters = [] } of constants.OPTS_HA_TAGS) {
+    if (tags.includes(name) && filters.length) {
+      output = filters.reduce((acc, filter) => MESSAGE_FILTERS[filter](acc), output)
+    }
+  }
+
+  return output
+}
+
+function process_message({ selectedButtonId, body, type, ...o }) {
+  if (PROCESS_TYPES.includes(type)) {
     let tags = get_tags(o)
-    console.log("process", tags, o.from, o.author, body)
     if (2 <= tags.length) {
-      request({
-        url: 'api/events/' + constants.OPTS_HA_EVENT_TYPE,
-        data: {
-          author: o.author,
-          messageId: o.id._serialized,
-          tags,
-          body
-        }
-      })
+      let filtered = filtered_body(body, tags)
+
+      console.log("process", tags, o.from, o.author, filtered, selectedButtonId)
+      if (filtered || selectedButtonId) {
+        request({
+          url: 'api/events/' + constants.OPTS_HA_EVENT_TYPE,
+          data: {
+            author: o.author,
+            messageId: o.id._serialized,
+            body: filtered,
+            selectedButtonId,
+            tags,
+          }
+        })
+      }
     }
   }
 }
@@ -239,25 +278,38 @@ async function get_body({ mimetype, filePath, url, body, data = body, options = 
   return body
 }
 
+function get_id(v) {
+  if (v) {
+    return v.toLowerCase().replace(/[^\w\s.]+/g, "").trim().replace(/\.+/g, ".").replace(/\s+/g, "_")
+  }
+}
+
 async function post_message ({ body: {
-  latitude,
-  longitude,
-  sections,
-  buttons,
-  mimetype,
-  filePath,
-  url,
-  body,
-  to,
-  options = {},
-  data = body,
-  filename = options.filename,
-  description = body,
-  title,
-  footer,
   messageOptions,
-  buttonText,
+
+  chatId,
+  content,
+  options = messageOptions,
+
+  // retrocompatibility (avoid using them because they may be removed in the future. instead, consider using "chatId", "content" and "options")
+  to = chatId,
+  latitude = content.latitude,
+  longitude = content.longitude,
+  sections = content.sections,
+  buttons = content.buttons,
+  mimetype = content.mimetype,
+  filePath = content.filePath,
+  url = content.url,
+  body = content.body || content,
+//  options = content.options,
+  data = body,
+  description = body,
+  filename = (content.options||{}).filename,
+  title = content.title,
+  footer = content.footer,
+  buttonText = content.buttonText,
 } }, res) {
+
   if (!to) {
     to = constants.OPTS_HA_DEFAULT_TO
   }
@@ -277,12 +329,37 @@ async function post_message ({ body: {
   if (latitude && longitude) {
     body = new Location(latitude, longitude, description)
   } else if (sections && sections.length) {
-    body = new List(body, buttonText, sections, title, footer)
+    body = new List(body, buttonText, sections.map(({rows = [], ...section}) => {
+      return {
+        ...section,
+        rows: rows.map(row => {
+          if (row.id) {
+            return r
+          }
+
+          console.warn("Consider defining your own row id")
+          return {
+            ...row,
+            id: get_id([body, section.title, row.title].join("."))
+          }
+        })
+      }
+    }), title, footer)
   } else {
-    body = await get_body({ mimetype, filePath, url, options, body, data, filename })
+    body = await get_body({ mimetype, filePath, url, options: (url === content.url?content.options:options), body, data, filename })
 
     if (buttons && buttons.length) {
-      body = new Buttons(body, buttons, title, footer)
+      body = new Buttons(body, buttons.map(o => {
+        if (o.id) {
+          return o
+        }
+
+        console.warn("Consider defining your own button id")
+        return {
+          ...o,
+          id: get_id([body, o.body].join("."))
+        }
+      }), title, footer)
     }
   }
 
@@ -323,12 +400,14 @@ app.use(express.json(), (error, req, res, next) => {
 
 app.post('/local/stdin', (req, res, next) => {  // for `hassio.addon_stdin` only
   if (req.ip !== '::ffff:127.0.0.1') {
+    console.log("stdin", "error", req.ip)
     res.status(403).send({ messages: [ { type: "invalid.source", parameters: { name: "ip", value: req.ip } } ] })
     return
   }
   next()
 }, ({ body: { type, value: body = {} } }, res) => {
   if (!type) {
+    console.log("stdin", "error", "missing type")
     res.status(400).send({ messages: [ { type: "required.parameter", parameters: { name: "type" } } ] })
     return
   }
