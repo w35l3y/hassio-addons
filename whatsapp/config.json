@@ -1,6 +1,6 @@
 {
   "name": "WhatsApp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "slug": "whatsapp",
   "description": "WhatsApp for Home Assistant",
   "url": "https://github.com/w35l3y/hassio-addons/tree/main/whatsapp",
@@ -30,6 +30,7 @@
       "group": "HOME",
       "values": ["whitelisted_contact_chatId"]
     }],
+    "groups": [],
     "env_vars": [
       { "name": "OPTS_HA_EVENT_TYPE", "value": "whatsapp_message" },
       { "name": "OPTS_HA_CHAT_IDS_FILTER", "value": "GROUP" },
@@ -48,6 +49,7 @@
       "filters": ["str?"],
       "values": ["str"]
     }],
+    "groups": ["str?"],
     "env_vars": [{
       "name": "match(^OPTS_HA_[A-Z0-9_]+$)",
       "value": "str"

@@ -15,6 +15,7 @@ const constants = [
   { name: 'OPTS_HA_DEFAULT_IDD', type: 'number' },
   { name: 'OPTS_HA_DEFAULT_DDD', type: 'number' },
   { name: 'OPTS_HA_TAGS', type: 'json', defaultValue: '[]' },
+  { name: 'OPTS_HA_GROUPS', type: 'json', defaultValue: '[]' },
   { name: 'OPTS_HA_NEW_SESSION', type: 'bool', defaultValue: 'false' },
   { name: 'OPTS_HA_RETRY_QUEUE', type: 'bool', defaultValue: 'true' },
   { name: 'OPTS_HA_DEBUG', type: 'bool', defaultValue: 'false' }
@@ -47,6 +48,9 @@ const SESSION_FILE_PATH_W = __dirname + '/session.json'
 
 let queue = []
 let sessionData = null
+const PROCESS_TYPES = ['chat', 'buttons_response']
+const MESSAGE_FILTERS = require('./filters.js')
+
 // https://github.com/home-assistant/supervisor/issues/2158
 // https://developers.home-assistant.io/docs/api/supervisor/endpoints#addons
 // https://github.com/just-containers/s6-overlay#fixing-ownership-and-permissions
@@ -55,26 +59,6 @@ if(!constants.OPTS_HA_NEW_SESSION && fs.existsSync(SESSION_FILE_PATH_R)) {
 }
 
 console.log(new Date(), 'session', sessionData?'EXISTING':'NEW')
-
-const client = new Client({
-  puppeteer: {
-    authTimeout: 0, // https://github.com/pedroslopez/whatsapp-web.js/issues/935#issuecomment-952867521
-    qrTimeoutMs: 0,
-    headless: true,
-    dumpio: constants.OPTS_HA_DEBUG,
-    args: [
-      '--disable-software-rasterizer',
-      '--disable-gpu',
-//      '--single-process', // dá falha num tal de X11 e não abre o navegador
-//      '--disable-setuid-sandbox',
-//      '--no-sandbox',
-//      '--no-zygote',
-//      '--ignore-gpu-blocklist',
-      '--disable-dev-shm-usage'
-    ]
-  },
-  session: sessionData
-})
 
 function request ({ url, headers, ...o }) {
   return axios({
@@ -99,33 +83,64 @@ function get_chatId_by_tag(item) {
   return item
 }
 
-function get_tags({ from, author }) {
-  if (!author || !from.endsWith("@g.us") || !author.endsWith("@c.us")) {
-    return []
+function get_tags({ from, author, to }) {
+  if (!author) {
+    return get_tags_by_chatId(from, acceptable_groups(to), true)
   }
 
-  let group_tags = []
-  let author_tags = []
-
-  for (const { name, values } of constants.OPTS_HA_TAGS) {
-    if (values.includes(from)) {
-      group_tags.push(name)
-    }
+  if (from.endsWith("@g.us")) {
+    return get_tags_by_chatId(author, get_tags_by_chatId(from), true)
   }
 
-  for (const { name, values, group } of constants.OPTS_HA_TAGS) {
-    if (values.includes(author) && (!group || group_tags.includes(group))) {
-      author_tags.push(name)
-    }
-  }
-
-  if (author_tags.length && !group_tags.length) {
-    console.warn("Only contact tags were found", author_tags)
-    return []
-  }
-
-  return [...group_tags, ...author_tags]
+  return []
 }
+
+function acceptable_groups(chatId) {
+  let output = []
+
+  for (const tag of constants.OPTS_HA_GROUPS) {
+    let tagFound = constants.OPTS_HA_TAGS.find(({ name }) => name === tag)
+    if (tagFound && tagFound.values.includes(chatId)) {
+      output.push(tag)
+    }
+  }
+
+  return output
+}
+
+function get_tags_by_chatId(chatId, groups = [], checkGroup = false) {
+  if (checkGroup && !group_tags.length) {
+    return []
+  }
+
+  let output = groups
+  for (const { name, values, group } of constants.OPTS_HA_TAGS) {
+    if (values.includes(chatId) && (!group || groups.includes(group))) {
+      output.push(name)
+    }
+  }
+  return output
+}
+
+const client = new Client({
+  puppeteer: {
+    authTimeout: 0, // https://github.com/pedroslopez/whatsapp-web.js/issues/935#issuecomment-952867521
+    qrTimeoutMs: 0,
+    headless: true,
+    dumpio: constants.OPTS_HA_DEBUG,
+    args: [
+      '--disable-software-rasterizer',
+      '--disable-gpu',
+//      '--single-process', // dá falha num tal de X11 e não abre o navegador
+//      '--disable-setuid-sandbox',
+//      '--no-sandbox',
+//      '--no-zygote',
+//      '--ignore-gpu-blocklist',
+      '--disable-dev-shm-usage'
+    ]
+  },
+  session: sessionData
+})
 
 client.on('qr', qr => {
   console.log(new Date(), 'qr')
@@ -188,12 +203,6 @@ client.on('disconnected', reason => {
   console.log(new Date(), 'disconnected', reason)
 })
 
-const PROCESS_TYPES = ['chat', 'buttons_response']
-const MESSAGE_FILTERS = {
-  "tolower": v => v.toLowerCase(),
-  "toupper": v => v.toUpperCase(),
-}
-
 function filtered_body(text, tags) {
   let output = text
 
@@ -232,7 +241,7 @@ function process_message({ selectedButtonId, body, type, ...o }) {
 client.on('message_create', message => {
   if (message.fromMe) {
     let { from, to } = message
-    process_message({ ...message, from: to, author: from })
+    process_message({ ...message, author: from, from: to })
   } else {
     process_message(message)
   }
@@ -325,9 +334,9 @@ async function post_message ({ body: {
   } = content
 
   if (latitude && longitude) {
-    body = new Location(latitude, longitude, description)
+    content = new Location(latitude, longitude, description)
   } else if (sections && sections.length) {
-    body = new List(body, buttonText, sections.map(({rows = [], ...section}) => {
+    content = new List(body, buttonText, sections.map(({rows = [], ...section}) => {
       return {
         ...section,
         rows: rows.map(row => {
@@ -347,7 +356,7 @@ async function post_message ({ body: {
     body = await get_body({ mimetype, filePath, url, options: (url === content.url?content.options:options), body, data, filename })
 
     if (buttons && buttons.length) {
-      body = new Buttons(body, buttons.map(o => {
+      content = new Buttons(body, buttons.map(o => {
         if (o.id) {
           return o
         }
@@ -358,18 +367,20 @@ async function post_message ({ body: {
           id: get_id([body, o.body].join("."))
         }
       }), title, footer)
+    } else {
+      content = body
     }
   }
 
-  if (!body) {
-    res.status(400).send({ messages: [ { type: "required.parameter", parameters: { name: "body" } } ] })
+  if (!content) {
+    res.status(400).send({ messages: [ { type: "required.parameter", parameters: { name: "content" } } ] })
     return
   }
   res.status(202).end()
 
-  console.log("message", { chatId, content, options })
+  console.log('message', { chatId, content, options })
   return client.sendMessage(chatId, content, options).catch(err => {
-    console.log(new Date(), "error", err)
+    console.log(new Date(), 'error', err)
     if (!constants.OPTS_HA_RETRY_QUEUE) {
       console.log(new Date(), 'no queue')
     } else if (-1 === queue.findIndex(item => item.chatId === chatId && item.content === content)) {

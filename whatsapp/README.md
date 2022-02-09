@@ -302,15 +302,16 @@ Example of automation that is triggered by an event named `whatsapp_message` and
 
 | env_vars (name) | type | default | description |
 | --- | --- | --- | --- |
-| OPTS_HA_EVENT_TYPE | string | whatsapp_message | event type that is sent when message is received.<br />received messages must match at least 2 tags to send an event.<br />usually, the tags used in the automation trigger represents the group that received the message and the author of the message. |
 | OPTS_HA_CHAT_IDS_FILTER | string | GROUP | default filter that is used to list chat ids. |
-| OPTS_HA_DEFAULT_TO | string | *empty* | default receiver chatId or tag to send message when none is defined. |
-| OPTS_HA_DEFAULT_IDD | number | *empty* | default IDD when the chatId informed doesn't include IDD.<br />it is always recommended to inform the whole chatId and not depend on this value. |
+| OPTS_HA_DEBUG | boolean | false | enables detailed log. |
 | OPTS_HA_DEFAULT_DDD | number | *empty* | defined DDD when the chatId informed doesn't include IDD+DDD.<br />it is always recommended to inform the whole chatId and not depend on this value. |
-| OPTS_HA_TAGS | json | [] | internal use |
+| OPTS_HA_DEFAULT_IDD | number | *empty* | default IDD when the chatId informed doesn't include IDD.<br />it is always recommended to inform the whole chatId and not depend on this value. |
+| OPTS_HA_DEFAULT_TO | string | *empty* | default receiver chatId or tag to send message when none is defined. |
+| OPTS_HA_EVENT_TYPE | string | whatsapp_message | event type that is sent when message is received.<br />received messages must match at least 2 tags to send an event.<br />usually, the tags used in the automation trigger represents the group that received the message and the author of the message. |
+| OPTS_HA_GROUPS | json | [] | internal use |
 | OPTS_HA_NEW_SESSION | boolean | false | force new session on every start. |
 | OPTS_HA_RETRY_QUEUE | boolean | true | tries to resend the message in case of an error. |
-| OPTS_HA_DEBUG | boolean | false | enables detailed log. |
+| OPTS_HA_TAGS | json | [] | internal use |
 
 ## Common errors
 

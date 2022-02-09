@@ -14,6 +14,10 @@ json=$(bashio::config "tags|tostring")
 bashio::log.info "Setting OPTS_HA_TAGS to ${json}"
 printf "${json}" > /var/run/s6/container_environment/OPTS_HA_TAGS
 
+json=$(bashio::config "groups|tostring")
+bashio::log.info "Setting OPTS_HA_GROUPS to ${json}"
+printf "${json}" > /var/run/s6/container_environment/OPTS_HA_GROUPS
+
 node --version
 which -a node
 npm --version

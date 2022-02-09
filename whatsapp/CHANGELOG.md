@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][keepachangelog],
 and this project adheres to [Semantic Versioning][semver].
 
+## [1.2.0] - 2022-02-09
+
+### Added
+
+- Added a way to interpret contact chatId as group chatId (groups)
+
 ## [1.1.0] - 2022-02-07
 
 ### Added
