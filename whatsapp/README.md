@@ -334,7 +334,7 @@ Example of automation that is triggered by an event named `whatsapp_message` and
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green
 [armhf-shield]: https://img.shields.io/badge/armhf-no-red
 [armv7-shield]: https://img.shields.io/badge/armv7-no-red
-[i386-shield]: https://img.shields.io/badge/i386-?-yellow
+[i386-shield]: https://img.shields.io/badge/i386-maybe-yellow
 [commits]: https://github.com/w35l3y/hassio-addons/commits/main
 [contributors]: https://github.com/w35l3y/hassio-addons/graphs/contributors
 [gitlabci]: https://github.com/w35l3y/hassio-addons/whatsapp/pipelines
