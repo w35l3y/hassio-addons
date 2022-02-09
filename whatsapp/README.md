@@ -6,6 +6,9 @@
 
 ![Supports aarch64 Architecture][aarch64-shield]
 ![Supports amd64 Architecture][amd64-shield]
+![Supports armhf Architecture][armhf-shield]
+![Supports armv7 Architecture][armv7-shield]
+![Supports i386 Architecture][i386-shield]
 
 ## About
 
@@ -327,11 +330,11 @@ Example of automation that is triggered by an event named `whatsapp_message` and
   if you restart the add-on before calling it, then a new QR code will be requested.
 
 
-[aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
-[amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
-[armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
-[armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
-[i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
+[aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green
+[amd64-shield]: https://img.shields.io/badge/amd64-yes-green
+[armhf-shield]: https://img.shields.io/badge/armhf-no-red
+[armv7-shield]: https://img.shields.io/badge/armv7-no-red
+[i386-shield]: https://img.shields.io/badge/i386-?-yellow
 [commits]: https://github.com/w35l3y/hassio-addons/commits/main
 [contributors]: https://github.com/w35l3y/hassio-addons/graphs/contributors
 [gitlabci]: https://github.com/w35l3y/hassio-addons/whatsapp/pipelines
