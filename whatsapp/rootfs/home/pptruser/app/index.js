@@ -83,18 +83,6 @@ function get_chatId_by_tag(item) {
   return item
 }
 
-function get_tags({ from, author, to }) {
-  if (!author) {
-    return get_tags_by_chatId(from, acceptable_groups(to), true)
-  }
-
-  if (from.endsWith("@g.us")) {
-    return get_tags_by_chatId(author, get_tags_by_chatId(from), true)
-  }
-
-  return []
-}
-
 function acceptable_groups(chatId) {
   let output = []
 
@@ -109,7 +97,7 @@ function acceptable_groups(chatId) {
 }
 
 function get_tags_by_chatId(chatId, groups = [], checkGroup = false) {
-  if (checkGroup && !group_tags.length) {
+  if (checkGroup && !groups.length) {
     return []
   }
 
@@ -119,7 +107,54 @@ function get_tags_by_chatId(chatId, groups = [], checkGroup = false) {
       output.push(name)
     }
   }
+
   return output
+}
+
+function get_tags({ from, author, to }) {
+  if (!author) {
+    return get_tags_by_chatId(from, acceptable_groups(to), true)
+  }
+
+  if (from.endsWith("@g.us")) {
+    return get_tags_by_chatId(author, get_tags_by_chatId(from), true)
+  }
+
+  return []
+}
+
+function filtered_body(text, tags) {
+  let output = text
+
+  for (const { name, filters = [] } of constants.OPTS_HA_TAGS) {
+    if (tags.includes(name) && filters.length) {
+      output = filters.reduce((acc, filter) => MESSAGE_FILTERS[filter](acc), output)
+    }
+  }
+
+  return output
+}
+
+function process_message({ selectedButtonId, body, type, ...o }) {
+  if (PROCESS_TYPES.includes(type)) {
+    let tags = get_tags(o)
+    if (2 <= tags.length) {
+      let filtered = filtered_body(body, tags)
+
+      if (filtered || selectedButtonId) {
+        request({
+          url: 'api/events/' + constants.OPTS_HA_EVENT_TYPE,
+          data: {
+            author: o.author,
+            messageId: o.id._serialized,
+            body: filtered,
+            selectedButtonId,
+            tags,
+          }
+        })
+      }
+    }
+  }
 }
 
 const client = new Client({
@@ -203,41 +238,6 @@ client.on('disconnected', reason => {
   console.log(new Date(), 'disconnected', reason)
 })
 
-function filtered_body(text, tags) {
-  let output = text
-
-  for (const { name, filters = [] } of constants.OPTS_HA_TAGS) {
-    if (tags.includes(name) && filters.length) {
-      output = filters.reduce((acc, filter) => MESSAGE_FILTERS[filter](acc), output)
-    }
-  }
-
-  return output
-}
-
-function process_message({ selectedButtonId, body, type, ...o }) {
-  if (PROCESS_TYPES.includes(type)) {
-    let tags = get_tags(o)
-    if (2 <= tags.length) {
-      let filtered = filtered_body(body, tags)
-
-      console.log("process", tags, o.from, o.author, filtered, selectedButtonId)
-      if (filtered || selectedButtonId) {
-        request({
-          url: 'api/events/' + constants.OPTS_HA_EVENT_TYPE,
-          data: {
-            author: o.author,
-            messageId: o.id._serialized,
-            body: filtered,
-            selectedButtonId,
-            tags,
-          }
-        })
-      }
-    }
-  }
-}
-
 client.on('message_create', message => {
   if (message.fromMe) {
     let { from, to } = message
@@ -295,14 +295,10 @@ function get_id(v) {
 }
 
 async function post_message ({ body: {
-  chatId,
-  content,
-  options,
+  chatId = constants.OPTS_HA_DEFAULT_TO,
+  content = {},
+  options = {},
 } }, res) {
-
-  if (!chatId) {
-    chatId = constants.OPTS_HA_DEFAULT_TO
-  }
 
   if (/^(\d{12,13})(?:@c\.us)?$/.test(chatId)) {
     chatId = RegExp.$1 + "@c.us"
