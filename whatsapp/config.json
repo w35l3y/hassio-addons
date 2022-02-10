@@ -1,6 +1,6 @@
 {
   "name": "WhatsApp",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "slug": "whatsapp",
   "description": "WhatsApp for Home Assistant",
   "url": "https://github.com/w35l3y/hassio-addons/tree/main/whatsapp",

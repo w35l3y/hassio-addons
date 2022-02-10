@@ -145,7 +145,7 @@ function process_message({ selectedButtonId, body, type, ...o }) {
         request({
           url: 'api/events/' + constants.OPTS_HA_EVENT_TYPE,
           data: {
-            author: o.author,
+            author: o.author || o.from,
             messageId: o.id._serialized,
             body: filtered,
             selectedButtonId,
