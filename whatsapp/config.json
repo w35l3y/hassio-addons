@@ -1,6 +1,6 @@
 {
   "name": "WhatsApp",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "slug": "whatsapp",
   "description": "WhatsApp for Home Assistant",
   "url": "https://github.com/w35l3y/hassio-addons/tree/main/whatsapp",
@@ -32,14 +32,15 @@
     }],
     "groups": [],
     "env_vars": [
-      { "name": "OPTS_HA_EVENT_TYPE", "value": "whatsapp_message" },
       { "name": "OPTS_HA_CHAT_IDS_FILTER", "value": "GROUP" },
-      { "name": "OPTS_HA_RETRY_QUEUE", "value": "true" },
+      { "name": "OPTS_HA_EVENT_TYPE", "value": "whatsapp_message" },
       { "name": "OPTS_HA_NEW_SESSION", "value": "false" },
       { "name": "OPTS_HA_DEBUG", "value": "false" },
       { "name": "OPTS_HA_DEFAULT_IDD", "value": "" },
       { "name": "OPTS_HA_DEFAULT_DDD", "value": "" },
-      { "name": "OPTS_HA_DEFAULT_TO", "value": "HOME" }
+      { "name": "OPTS_HA_DEFAULT_TO", "value": "HOME" },
+      { "name": "OPTS_HA_RESTART_ON_AUTH_FAIL", "value": "true" },
+      { "name": "OPTS_HA_RETRY_QUEUE", "value": "true" }
     ]
   },
   "schema": {

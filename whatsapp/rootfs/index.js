@@ -9,16 +9,17 @@ const isString = value => Object.prototype.toString.call(value) === '[object Str
 
 let error = false
 const constants = [
-  { name: 'OPTS_HA_EVENT_TYPE', type: 'string', defaultValue: 'whatsapp_message' },
   { name: 'OPTS_HA_CHAT_IDS_FILTER', type: 'string', defaultValue: 'GROUP' },
-  { name: 'OPTS_HA_DEFAULT_TO', type: 'string' },
-  { name: 'OPTS_HA_DEFAULT_IDD', type: 'number' },
+  { name: 'OPTS_HA_DEBUG', type: 'bool', defaultValue: 'false' },
   { name: 'OPTS_HA_DEFAULT_DDD', type: 'number' },
-  { name: 'OPTS_HA_TAGS', type: 'json', defaultValue: '[]' },
+  { name: 'OPTS_HA_DEFAULT_IDD', type: 'number' },
+  { name: 'OPTS_HA_DEFAULT_TO', type: 'string' },
+  { name: 'OPTS_HA_EVENT_TYPE', type: 'string', defaultValue: 'whatsapp_message' },
   { name: 'OPTS_HA_GROUPS', type: 'json', defaultValue: '[]' },
   { name: 'OPTS_HA_NEW_SESSION', type: 'bool', defaultValue: 'false' },
+  { name: 'OPTS_HA_RESTART_ON_AUTH_FAIL', type: 'bool', defaultValue: 'true' },
   { name: 'OPTS_HA_RETRY_QUEUE', type: 'bool', defaultValue: 'true' },
-  { name: 'OPTS_HA_DEBUG', type: 'bool', defaultValue: 'false' }
+  { name: 'OPTS_HA_TAGS', type: 'json', defaultValue: '[]' },
 ].reduce((acc, { name, type, defaultValue, required }) => {
   let value = convert[type](process.env[name] || defaultValue || '')
 
@@ -43,8 +44,7 @@ const qrcode = require('qrcode')
 const axios = require('axios')
 const fs = require('fs')
 const { Client, Buttons, MessageMedia, Location, List } = require('whatsapp-web.js')
-const SESSION_FILE_PATH_R = '/data/session.json'
-const SESSION_FILE_PATH_W = __dirname + '/session.json'
+const SESSION_FILE_PATH = '/data/session.json'
 
 let queue = []
 let sessionData = null
@@ -54,8 +54,8 @@ const MESSAGE_FILTERS = require('./filters.js')
 // https://github.com/home-assistant/supervisor/issues/2158
 // https://developers.home-assistant.io/docs/api/supervisor/endpoints#addons
 // https://github.com/just-containers/s6-overlay#fixing-ownership-and-permissions
-if(!constants.OPTS_HA_NEW_SESSION && fs.existsSync(SESSION_FILE_PATH_R)) {
-  sessionData = require(SESSION_FILE_PATH_R)
+if(!constants.OPTS_HA_NEW_SESSION && fs.existsSync(SESSION_FILE_PATH)) {
+  sessionData = require(SESSION_FILE_PATH)
 }
 
 console.log(new Date(), 'session', sessionData?'EXISTING':'NEW')
@@ -157,10 +157,29 @@ function process_message({ selectedButtonId, body, type, ...o }) {
   }
 }
 
+async function send_queue() {
+  if (queue.length) {
+    const { chatId, content, options } = queue[0]
+
+    return client.sendMessage(chatId, content, options).then(() => {
+      queue.shift()
+      setTimeout(send_queue, 1000)
+      return 0
+    }, err => {
+      console.log(new Date(), "send_queue", "error", err)
+      return 1
+    })
+  }
+
+  return 0
+}
+
 const client = new Client({
+  authTimeoutMs: 0,
+  qrTimeoutMs: 0,
+  restartOnAuthFail: constants.OPTS_HA_RESTART_ON_AUTH_FAIL,
+  qrMaxRetries: 10,
   puppeteer: {
-    authTimeout: 0, // https://github.com/pedroslopez/whatsapp-web.js/issues/935#issuecomment-952867521
-    qrTimeoutMs: 0,
     headless: true,
     dumpio: constants.OPTS_HA_DEBUG,
     args: [
@@ -168,7 +187,7 @@ const client = new Client({
       '--disable-gpu',
 //      '--single-process', // dá falha num tal de X11 e não abre o navegador
 //      '--disable-setuid-sandbox',
-//      '--no-sandbox',
+      '--no-sandbox',
 //      '--no-zygote',
 //      '--ignore-gpu-blocklist',
       '--disable-dev-shm-usage'
@@ -194,35 +213,25 @@ client.on('qr', qr => {
 
 client.on('auth_failure', message => {
   console.log(new Date(), 'auth_failure', message)
+
+  sessionData = null
+  fs.unlink(SESSION_FILE_PATH)
+
+  if (constants.OPTS_HA_RESTART_ON_AUTH_FAIL) {
+    console.log(new Date(), 'reconnecting')
+  }
 })
 
 client.on('authenticated', session => {
   console.log(new Date(), 'authenticated')
 
   sessionData = session
-  fs.writeFile(SESSION_FILE_PATH_W, JSON.stringify(session), (err) => {
+  fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), (err) => {
     if (err) {
       console.error(err)
     }
   })
 })
-
-async function send_queue() {
-  if (queue.length) {
-    const { chatId, content, options } = queue[0]
-
-    return client.sendMessage(chatId, content, options).then(() => {
-      queue.shift()
-      setTimeout(send_queue, 1000)
-      return 0
-    }, err => {
-      console.log(new Date(), "send_queue", "error", err)
-      return 1
-    })
-  }
-
-  return 0
-}
 
 client.on('ready', () => {
   console.log(new Date(), 'ready')

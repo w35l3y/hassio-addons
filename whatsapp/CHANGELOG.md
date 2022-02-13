@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][keepachangelog],
 and this project adheres to [Semantic Versioning][semver].
 
+## [1.2.2] - 2022-02-13
+
+### Changed
+
+- User "root" being used
+- Fixed session
+
 ## [1.2.1] - 2022-02-10
 
 ### Added

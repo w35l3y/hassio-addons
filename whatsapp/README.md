@@ -313,6 +313,7 @@ Example of automation that is triggered by an event named `whatsapp_message` and
 | OPTS_HA_EVENT_TYPE | string | whatsapp_message | event type that is sent when message is received.<br />received messages must match at least 2 tags to send an event.<br />usually, the tags used in the automation trigger represents the group that received the message and the author of the message. |
 | OPTS_HA_GROUPS | json | [] | internal use |
 | OPTS_HA_NEW_SESSION | boolean | false | force new session on every start. |
+| OPTS_HA_RESTART_ON_AUTH_FAIL | boolean | true | restart client on authentication failure.<br />it will require another QR code. |
 | OPTS_HA_RETRY_QUEUE | boolean | true | tries to resend the message in case of an error. |
 | OPTS_HA_TAGS | json | [] | internal use |
 
