@@ -49,7 +49,8 @@ _For more details:_
 - Open Configuration and add the following code:
 
 Copy the following code _only_ if you **don't have** your own domain<br />
-Note: This way, `a-very-long-random-subdomain-name.trycloudflare.com` will be created after you complete step 4 and it will be different on every boot.<br />
+Note 1: This way, `a-very-long-random-subdomain-name.trycloudflare.com` will be created after you complete step 4 and it will be different on every boot.<br />
+Note 2: It is only recommended for testing purpose. Consider getting your own domain for free at [Freenom](https://www.freenom.com).
 
 ```
 no-autoupdate: true # leave it as is
