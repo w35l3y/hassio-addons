@@ -34,7 +34,7 @@ if bashio::fs.file_exists "$CREDFILE"; then
 fi
 
 # certificate not found or tunnel changed name
-if ! bashio::fs.file_exists "$CLOUDFLARE_PATH/cert.pem" || [[ "$OLD_TUNNEL" != "$NEW_TUNNEL" ]]; then
+if ! bashio::fs.file_exists "$CLOUDFLARE_PATH/cert.pem" || [[ "$OLD_TUNNEL" != "$NEW_TUNNEL" ]] || ! bashio::fs.file_exists "$CREDFILE"; then
   cloudflared tunnel login
 
   cloudflared tunnel list
