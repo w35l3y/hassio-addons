@@ -1,9 +1,8 @@
 #!/usr/bin/with-contenv bashio
 
 if bashio::config.has_value 'url'; then
-  cloudflared tunnel --config /data/options.yaml
+  URL=$(bashio::config "url")
+  exec cloudflared tunnel --url "$URL"
 else
-  cloudflared tunnel --config /data/options.yaml run
+  exec cloudflared --credentials-file=/data/tunnel.json tunnel --config=/data/options.json run
 fi
-
-sleep 10

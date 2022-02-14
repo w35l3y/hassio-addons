@@ -1,6 +1,6 @@
 {
   "name": "Cloudflare Tunnel",
-  "version": "1.2.5",
+  "version": "1.3.0",
   "slug": "cloudflare-tunnel",
   "description": "Cloudflare Tunnel for Home Assistant",
   "url": "https://github.com/w35l3y/hassio-addons/tree/main/cloudflare_tunnel",
@@ -11,12 +11,13 @@
   "startup": "services",
   "boot": "auto",
   "ports": {
-    "41705/tcp": 41705
+    "41705/tcp": null
   },
   "options": {
     "no-autoupdate": true,
     "originRequest": {},
     "metrics": "localhost:41705",
+    "tunnel": "homeassistant",
     "ingress": [
       {
         "hostname": "",

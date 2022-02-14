@@ -1,40 +1,58 @@
 #!/usr/bin/with-contenv bashio
 
-set -eE
-
-yq eval -P /data/options.json > /data/options.yaml
-
+# quick tunnel
 if bashio::config.has_value 'url'; then
-  exit 0
+  bashio::exit.ok
 fi
 
-if bashio::config.is_empty 'ingress[0].hostname'; then
+# validations
+if bashio::config.is_empty "ingress[0].hostname"; then
   rm -f /data/cert.pem
   bashio::exit.nok "Hostname not defined"
 fi
 
-mkdir -p $HOME/.cloudflared
-cp -r /data/. $HOME/.cloudflared
+if bashio::config.is_empty "tunnel"; then
+  rm -f /data/cert.pem
+  bashio::exit.nok "Tunnel not defined"
+fi
 
-ls -R $HOME/.cloudflared
+cloudflared tunnel --config=/data/options.json ingress validate || bashio::exit.nok "Config file is invalid"
 
-cloudflared tunnel --config /data/options.yaml ingress validate
+#copy persistent files
+CLOUDFLARE_PATH="$HOME/.cloudflared"
+CREDFILE="$CLOUDFLARE_PATH/tunnel.json"
 
-if ! bashio::fs.file_exists "$HOME/.cloudflared/cert.pem"; then
+mkdir -p "$CLOUDFLARE_PATH"
+cp -r /data/. "$CLOUDFLARE_PATH"
+
+ls -R "$CLOUDFLARE_PATH"
+
+NEW_TUNNEL=$(bashio::config "tunnel")
+OLD_TUNNEL="$NEW_TUNNEL"
+if bashio::fs.file_exists "$CREDFILE"; then
+  OLD_TUNNEL=$(bashio::jq "$CREDFILE" ".TunnelName")
+fi
+
+# certificate not found or tunnel changed name
+if ! bashio::fs.file_exists "$CLOUDFLARE_PATH/cert.pem" || [[ "$OLD_TUNNEL" != "$NEW_TUNNEL" ]]; then
   cloudflared tunnel login
 
   cloudflared tunnel list
-  TUNNEL=$(bashio::config 'tunnel')
 
-  cloudflared tunnel delete -f "$TUNNEL" || true
+  cloudflared tunnel delete -f "$OLD_TUNNEL" || true
+  cloudflared tunnel delete -f "$NEW_TUNNEL" || true
 
-  rm -rf $HOME/.cloudflared/*.json
-  cloudflared tunnel create "$TUNNEL"
+  rm -f "$CREDFILE"
 
-  rm -rf /data/*.json
-  cp -r $HOME/.cloudflared/. /data/
+  cloudflared --credentials-file="$CREDFILE" tunnel create "$NEW_TUNNEL"
+
+  cp -r $CLOUDFLARE_PATH/. /data/
 fi
 
-cloudflared tunnel route ip show
+for index in $(bashio::config "ingress|keys"); do
+  HOSTNAME=$(bashio::config "ingress[${index}].hostname")
 
-ifconfig
+  if [[ -n "$HOSTNAME" && "$HOSTNAME" != "null" ]]; then
+    cloudflared tunnel route dns -f "$NEW_TUNNEL" "$HOSTNAME" || bashio::exit.nok "Failed to create DNS route: $HOSTNAME"
+  fi
+done
