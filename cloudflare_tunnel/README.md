@@ -91,15 +91,6 @@ _For more details:_
    - Copy and paste the authentication link in the browser<br />
    - Click `mydomain.com`<br />
    - Confirm the authentication<br />
-6. Get Tunnel ID<br />
-   - Return to tab Log<br />
-   - Copy the Tunnel ID
-     ![Screenshot of the Log containing the Tunnel ID][log-tunnel-created]
-7. Add CNAME<br />
-   - Go to https://dash.cloudflare.com/?zone=dns<br />
-   - Add CNAME `example` alias to `<tunnelID>.cfargotunnel.com` with proxy enabled
-     - Change `<tunnelID>` to the Tunnel ID, for example, `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.cfargotunnel.com`
-       ![Screenshot of the Cloudflare Dash][cloudflare-cname]
 
 ## Common errors
 
