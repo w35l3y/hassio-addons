@@ -94,6 +94,9 @@ _For more details:_
 
 ## Common errors
 
+- _Tunnel credentials file '/data/tunnel.json' doesn't exist or is not a file_<br />
+  Change the current tunnel name or reinstall the add-on.<br />
+
 - _400: Bad Request_<br />
   Update `trusted_proxies` with the IP or range that is shown in the HA Logs (Sidebar Configurations > Logs).
 
