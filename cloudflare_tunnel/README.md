@@ -99,7 +99,8 @@ _For more details:_
   Change the current tunnel name or reinstall the add-on.<br />
 
 - _400: Bad Request_<br />
-  Update `trusted_proxies` with the IP or range that is shown in the HA Logs (Sidebar Configurations > Logs).
+  Update `trusted_proxies` with the IP or range that is shown in the Home Assistant Logs (Sidebar `Configuration > Settings > Logs` and/or `Configuration > Add-ons, Backups & Supervisor > System > Log provider`).<br />
+  For details on how to find the logs, check https://github.com/w35l3y/hassio-addons/issues/14#issuecomment-1115514830
 
 - _Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: **dial tcp: lookup xxx on xxx: server misbehaving**_<br />
   Update `url` or `service` with the correct local IP and port of the service in the addon configuration (Add-on Cloudflare Tunnel > Configuration).<br />
