@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][keepachangelog],
 and this project adheres to [Semantic Versioning][semver].
 
+## [1.4.1] - 2022-05-14
+
+### Changed
+
+- Disable apparmor temporarily
+
 ## [1.4.0] - 2022-05-13
 
 ### Added
