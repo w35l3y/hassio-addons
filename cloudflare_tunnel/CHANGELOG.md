@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][keepachangelog],
 and this project adheres to [Semantic Versioning][semver].
 
+## [1.4.0] - 2022-05-13
+
+### Added
+
+- Update for s6 v3 and add apparmor
+
 ## [1.3.0] - 2022-02-13
 
 ### Added
