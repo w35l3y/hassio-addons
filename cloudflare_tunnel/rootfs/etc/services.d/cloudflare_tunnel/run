@@ -4,5 +4,5 @@ if bashio::config.has_value 'url'; then
   URL=$(bashio::config "url")
   exec cloudflared tunnel --url "$URL"
 else
-  exec cloudflared --credentials-file=/data/tunnel.json tunnel --config=/data/options.json run
+  exec cloudflared tunnel --config=/data/options.json run
 fi

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][keepachangelog],
 and this project adheres to [Semantic Versioning][semver].
 
+## [1.6.0] - 2022-05-15
+
+### Added
+
+- Externalized ["origincert"][origincert]
+
 ## [1.5.0] - 2022-05-14
 
 ### Added
@@ -50,3 +56,4 @@ and this project adheres to [Semantic Versioning][semver].
 
 [semver]: https://semver.org/spec/v2.0.0.html
 [keepachangelog]: https://keepachangelog.com/en/1.0.0/
+[origincert]: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/configuration/arguments/#origincert

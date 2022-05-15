@@ -1,6 +1,6 @@
 {
   "name": "Cloudflare Tunnel",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "slug": "cloudflare_tunnel",
   "description": "Cloudflare Tunnel for Home Assistant",
   "url": "https://github.com/w35l3y/hassio-addons/tree/main/cloudflare_tunnel",
@@ -9,17 +9,19 @@
   "apparmor": true,
   "panel_icon": "mdi:tunnel",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
-  "map": ["config:rw"],
+  "map": ["config:rw", "ssl:rw"],
   "startup": "services",
   "boot": "auto",
   "ports": {
     "41705/tcp": null
   },
   "options": {
+    "tunnel": "homeassistant",
+    "credentials-file": "/data/tunnel.json",
+    "origincert": "/data/cert.pem",
+    "metrics": "localhost:41705",
     "no-autoupdate": true,
     "originRequest": {},
-    "metrics": "localhost:41705",
-    "tunnel": "homeassistant",
     "ingress": [
       {
         "hostname": "",
@@ -31,6 +33,20 @@
     ]
   },
   "schema": {
+    "autoupdate-freq": "str?",
+    "no-autoupdate": "bool?",
+    "origincert": "str?",
+    "grace-period": "str?",
+    "metrics": "str?",
+    "metrics-update-freq": "str?",
+    "tag": "str?",
+    "retries": "int(0,)?",
+    "pidfile": "str?",
+    "protocol": "str?",
+    "region": "str?",
+    "logfile": "str?",
+    "loglevel": "str?",
+    "transport-loglevel": "str?",
     "tunnel": "str?",
     "credentials-file": "str?",
     "originRequest": {
@@ -49,10 +65,6 @@
       "proxyPort": "port?",
       "proxyType": "str?"
     },
-    "no-autoupdate": "bool?",
-    "loglevel": "str?",
-    "logfile": "str?",
-    "metrics": "str?",
     "url": "str?",
     "ingress": [
       {

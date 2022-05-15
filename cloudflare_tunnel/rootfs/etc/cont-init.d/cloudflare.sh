@@ -5,60 +5,51 @@ if bashio::config.has_value 'url'; then
   bashio::exit.ok
 fi
 
+CREDFILE=$(bashio::config "\"credentials-file\"" "/data/tunnel.json")
+OLD_ORIGINCERT="$HOME/.cloudflared/cert.pem"
+NEW_ORIGINCERT=$(bashio::config "origincert" "/data/cert.pem")
+
 # validations
 if bashio::config.is_empty "ingress[0].hostname"; then
-  rm -f /data/cert.pem
+  rm -f "$CREDFILE"
   bashio::exit.nok "Hostname not defined"
 fi
 
 if bashio::config.is_empty "tunnel"; then
-  rm -f /data/cert.pem
+  rm -f "$CREDFILE"
   bashio::exit.nok "Tunnel not defined"
 fi
 
 cloudflared tunnel --config=/data/options.json ingress validate || bashio::exit.nok "Config file is invalid"
 
-#copy persistent files
-CLOUDFLARE_PATH="$HOME/.cloudflared"
-CREDFILE="$CLOUDFLARE_PATH/tunnel.json"
-
-echo "Creating folder... $CLOUDFLARE_PATH"
-mkdir -p -m $(umask -S) "$CLOUDFLARE_PATH"
-
-echo "Copying data..."
-cp -r /data/. "$CLOUDFLARE_PATH"
-
-echo "Listing directories and files..."
-ls -AgiR "$HOME"
-
-echo "Checking old tunnel..."
 NEW_TUNNEL=$(bashio::config "tunnel")
-OLD_TUNNEL="$NEW_TUNNEL"
-if bashio::fs.file_exists "$CREDFILE"; then
-  OLD_TUNNEL=$(bashio::jq "$CREDFILE" ".TunnelName")
-fi
+OLD_TUNNEL=$(bashio::cache.get "addons.self.info.TunnelName" || echo "$NEW_TUNNEL")
 
 echo "Checking certificate..."
 # certificate not found or tunnel changed name
-if ! bashio::fs.file_exists "$CLOUDFLARE_PATH/cert.pem" || [[ "$OLD_TUNNEL" != "$NEW_TUNNEL" ]] || ! bashio::fs.file_exists "$CREDFILE"; then
+if ! bashio::fs.file_exists "$NEW_ORIGINCERT" || [[ "$OLD_TUNNEL" != "$NEW_TUNNEL" ]] || ! bashio::fs.file_exists "$CREDFILE"; then
   echo "Logging..."
-  cloudflared tunnel login
+  cloudflared tunnel --config=/data/options.json login
+
+  if [[ "$OLD_ORIGINCERT" != "$NEW_ORIGINCERT" && "$NEW_ORIGINCERT" == /data/* ]]; then
+    echo "Moving certificate..."
+    mv -fv "$OLD_ORIGINCERT" "$NEW_ORIGINCERT"
+  fi
 
   echo "Listing tunnels..."
-  cloudflared tunnel list
+  cloudflared tunnel --config=/data/options.json list
 
   echo "Deleting tunnels..."
-  cloudflared tunnel delete -f "$OLD_TUNNEL" || true
-  cloudflared tunnel delete -f "$NEW_TUNNEL" || true
+  cloudflared tunnel --config=/data/options.json delete -f "$OLD_TUNNEL" || true
+  cloudflared tunnel --config=/data/options.json delete -f "$NEW_TUNNEL" || true
 
-  echo "Removing file..."
+  echo "Removing credentials file..."
   rm -f "$CREDFILE"
 
   echo "Creating tunnel..."
-  cloudflared --credentials-file="$CREDFILE" tunnel create "$NEW_TUNNEL"
+  cloudflared tunnel --config=/data/options.json --credentials-file="$CREDFILE" create "$NEW_TUNNEL"
 
-  echo "Copying data..."
-  cp -r $CLOUDFLARE_PATH/. /data/
+  bashio::cache.set "addons.self.info.TunnelName" "$NEW_TUNNEL"
 fi
 
 echo "Adding routes..."
@@ -66,6 +57,6 @@ for index in $(bashio::config "ingress|keys"); do
   HOSTNAME=$(bashio::config "ingress[${index}].hostname")
 
   if [[ -n "$HOSTNAME" && "$HOSTNAME" != "null" ]]; then
-    cloudflared tunnel route dns -f "$NEW_TUNNEL" "$HOSTNAME" || bashio::exit.nok "Failed to create DNS route: $HOSTNAME"
+    cloudflared tunnel --config=/data/options.json route dns -f "$NEW_TUNNEL" "$HOSTNAME" || bashio::exit.nok "Failed to create DNS route: $HOSTNAME"
   fi
 done
