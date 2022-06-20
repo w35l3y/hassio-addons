@@ -10,6 +10,10 @@ This is needed simply because Amazon sends the token in the request body and Hom
 
 This add-on is better used with add-on [Cloudflare Tunnel](https://my.home-assistant.io/redirect/supervisor_addon/?addon=c50d1fa4_cloudflare_tunnel&repository_url=https%3A%2F%2Fgithub.com%2Fw35l3y%2Fhassio-addons) or any other that does the same thing.
 
+When we create a Custom Alexa Skill, we need to define an endpoint that may be `AWS Lambda ARN` or `HTTPS`<br />
+This add-on helps to provide a way to use `HTTPS`<br />
+![Example of Alexa Custom Skill Settings][alexa-custom-skill]
+
 ## How to use it
 
 This will be explained as you were using the add-on [Cloudflare Tunnel](https://my.home-assistant.io/redirect/supervisor_addon/?addon=c50d1fa4_cloudflare_tunnel&repository_url=https%3A%2F%2Fgithub.com%2Fw35l3y%2Fhassio-addons).
@@ -52,7 +56,6 @@ ingress:
   - hostname: alexa-proxy.mydomain.com      # subdomain of your domain that will be used to receive requests from Alexa Custom Skill
     service: http://homeassistant:3015      # instance of HA and port that points to the `Alexa Proxy`
 ```
-![Example of Alexa Custom Skill Settings][alexa-custom-skill]
 
 
 [commits]: https://github.com/w35l3y/hassio-addons/commits/main
@@ -65,4 +68,4 @@ ingress:
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2022.svg
 [project-stage-shield]: https://img.shields.io/badge/Project%20Stage-Development-yellowgreen.svg
 [semver]: http://semver.org/spec/v2.0.0.htm
-[alexa-custom-skill]: https://github.com/w35l3y/hassio-addons/raw/main/alexa_proxy/resources/img/alexa-custom-skill.png
+[alexa-custom-skill]: https://github.com/w35l3y/hassio-addons/alexa_proxy/resources/img/alexa-custom-skill.png
