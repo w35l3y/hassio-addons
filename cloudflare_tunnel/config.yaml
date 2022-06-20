@@ -1,0 +1,80 @@
+name: Cloudflare Tunnel
+version: 1.6.0
+slug: cloudflare_tunnel
+description: Cloudflare Tunnel for Home Assistant
+url: https://github.com/w35l3y/hassio-addons/tree/main/cloudflare_tunnel
+ingress: false
+init: false
+apparmor: true
+panel_icon: mdi:tunnel
+arch:
+  - armhf
+  - armv7
+  - aarch64
+  - amd64
+  - i386
+map:
+  - config:rw
+  - ssl:ro
+startup: services
+boot: auto
+ports:
+  41705/tcp:
+options:
+  tunnel: homeassistant
+  credentials-file: "/data/tunnel.json"
+  protocol: auto
+  origincert: "/data/cert.pem"
+  loglevel: info
+  transport-loglevel: warn
+  ingress:
+    - hostname: ""
+      service: http://homeassistant:8123
+    - service: http_status:404
+  originRequest: {}
+  warp-routing:
+    enabled: false
+  metrics: localhost:41705
+  metrics-update-freq: 5s
+  grace-period: 30s
+  retries: 5
+  no-autoupdate: true
+schema:
+  tunnel: str?
+  credentials-file: str?
+  protocol: str?
+  origincert: str?
+  logfile: str?
+  loglevel: str?
+  transport-loglevel: str?
+  url: str?
+  ingress:
+    - hostname: str?
+      path: str?
+      service: str?
+  originRequest:
+    connectTimeout: str?
+    tlsTimeout: str?
+    tcpKeepAlive: str?
+    noHappyEyeballs: bool?
+    keepAliveConnections: int(0,)?
+    keepAliveTimeout: str?
+    httpHostHeader: str?
+    originServerName: str?
+    caPool: str?
+    noTLSVerify: bool?
+    disableChunkedEncoding: bool?
+    proxyAddress: str?
+    proxyPort: port?
+    proxyType: str?
+  warp-routing:
+    enabled: bool?
+  metrics: str?
+  metrics-update-freq: str?
+  grace-period: str?
+  retries: int(0,)?
+  no-autoupdate: bool?
+  autoupdate-freq: str?
+  tag: str?
+  pidfile: str?
+  region: str?
