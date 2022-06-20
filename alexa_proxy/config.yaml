@@ -24,7 +24,7 @@ ports:
 options:
   env_vars:
     - name: OPTS_HA_BASE_URL
-      value: http://homeassistant.local:8123
+      value: http://homeassistant:8123
     - name: OPTS_HA_TOKEN
       value: ""
 schema:
