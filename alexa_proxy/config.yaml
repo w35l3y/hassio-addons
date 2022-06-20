@@ -18,9 +18,9 @@ startup: services
 boot: auto
 environment:
   NODE_ENV: production
-  PORT: 3000
+  PORT: "3000"
 ports:
-  3000/tcp: 3015
+  3000/tcp: "3015"
 options:
   env_vars:
     - name: OPTS_HA_BASE_URL
