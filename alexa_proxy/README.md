@@ -5,14 +5,15 @@
 
 ## About
 
+When we create a Custom Alexa Skill, we need to define an endpoint that may be `AWS Lambda ARN` or `HTTPS`<br />
+This add-on helps to provide a way to use `HTTPS`<br />
+
+![Example of Alexa Custom Skill Settings][alexa-custom-skill]
+
 It just reads the `access_token` from the request body and redirects the request with it in the request header.<br />
 This is needed simply because Amazon sends the token in the request body and Home Assistant only recognizes it in the request header.
 
 This add-on is better used with add-on [Cloudflare Tunnel](https://my.home-assistant.io/redirect/supervisor_addon/?addon=c50d1fa4_cloudflare_tunnel&repository_url=https%3A%2F%2Fgithub.com%2Fw35l3y%2Fhassio-addons) or any other that does the same thing.
-
-When we create a Custom Alexa Skill, we need to define an endpoint that may be `AWS Lambda ARN` or `HTTPS`<br />
-This add-on helps to provide a way to use `HTTPS`<br />
-![Example of Alexa Custom Skill Settings][alexa-custom-skill]
 
 ## How to use it
 
