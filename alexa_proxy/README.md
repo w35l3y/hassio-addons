@@ -68,4 +68,4 @@ ingress:
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2022.svg
 [project-stage-shield]: https://img.shields.io/badge/Project%20Stage-Development-yellowgreen.svg
 [semver]: http://semver.org/spec/v2.0.0.htm
-[alexa-custom-skill]: https://github.com/w35l3y/hassio-addons/alexa_proxy/resources/img/alexa-custom-skill.png
+[alexa-custom-skill]: https://github.com/w35l3y/hassio-addons/raw/main/alexa_proxy/resources/img/alexa-custom-skill.png
