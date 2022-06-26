@@ -61,14 +61,37 @@ url: http://homeassistant:8123 # without ".local" or IP address
 ```
 
 Copy the following code _only_ if you **have** your own domain and it is managed by [Cloudflare](https://dash.cloudflare.com/)<br />
-Note: This way, you can have as many services as you want at once. Just add a new hostname and service. The last one is "catch-all", so it doesn't have specific hostname. You may also use wildcard character in hostname.<br />
+Note: This way, you can have as many services as you want at once.<br />
+The last one is "catch-all", so it doesn't have specific hostname. You may also use wildcard character in hostname.<br />
+
+* Example with only Home Assistant
+```
+no-autoupdate: true # leave it as is
+metrics: localhost:41705 # leave it as is
+ingress:
+  - service: http://homeassistant:8123 # IP address or without ".local"
+    hostname: home.mydomain.com
+  - service: http_status:404 # leave it as is
+originRequest: {}
+tunnel: hassio # May be anything you want. It identifies the tunnel and doesn't have anything to do with hostname
+```
+
+* Example with Home Assistant and many other services
+
+If you need to externalize more services, just add a new service and hostname for each of them.<br />
+**These are only examples... make sure to have some kind of authetication on each externalized service.**<br />
+Otherwise, it will be open to anyone in the world.
 
 ```
 no-autoupdate: true # leave it as is
 metrics: localhost:41705 # leave it as is
 ingress:
   - service: http://homeassistant:8123 # IP address or without ".local"
-    hostname: example.mydomain.com
+    hostname: home.mydomain.com
+  - service: http://homeassistant:1880 # just an example of another service
+    hostname: nodered.mydomain.com
+  - service: http://homeassistant:1883 # just an example of another service
+    hostname: mqttbroker.mydomain.com
   - service: http_status:404 # leave it as is
 originRequest: {}
 tunnel: hassio # May be anything you want. It identifies the tunnel and doesn't have anything to do with hostname
