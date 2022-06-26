@@ -67,8 +67,8 @@ Note: This way, you can have as many services as you want at once. Just add a ne
 no-autoupdate: true # leave it as is
 metrics: localhost:41705 # leave it as is
 ingress:
-  - hostname: example.mydomain.com
-    service: http://homeassistant:8123 # without ".local" or IP address
+  - service: http://homeassistant:8123 # IP address or without ".local"
+    hostname: example.mydomain.com
   - service: http_status:404 # leave it as is
 originRequest: {}
 tunnel: hassio # May be anything you want. It identifies the tunnel and doesn't have anything to do with hostname
