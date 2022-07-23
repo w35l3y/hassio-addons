@@ -90,7 +90,7 @@ ingress:
     hostname: home.mydomain.com
   - service: http://homeassistant:1880 # just an example of another service
     hostname: nodered.mydomain.com
-  - service: http://homeassistant:1883 # just an example of another service
+  - service: mqtt://homeassistant:1883 # just an example of another service
     hostname: mqttbroker.mydomain.com
   - service: http_status:404 # leave it as is
 originRequest: {}
