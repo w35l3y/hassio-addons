@@ -343,6 +343,6 @@ Example of automation that is triggered by an event named `whatsapp_message` and
 [issue]: https://github.com/w35l3y/hassio-addons/issues
 [license-shield]: https://img.shields.io/github/license/hassio-addons/addon-vscode.svg
 [license]: https://github.com/w35l3y/hassio-addons/LICENSE.md
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2022
+[maintenance-shield]: https://img.shields.io/maintenance/no/2022
 [project-stage-shield]: https://img.shields.io/badge/Project%20Stage-Development-yellowgreen.svg
 [semver]: http://semver.org/spec/v2.0.0.htm
