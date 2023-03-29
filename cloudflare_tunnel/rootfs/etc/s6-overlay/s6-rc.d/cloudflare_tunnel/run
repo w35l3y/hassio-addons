@@ -1,0 +1,13 @@
+#!/command/with-contenv bashio
+
+bashio::log.trace "<tunnel>"
+
+if bashio::config.has_value 'url'; then
+  bashio::log.blue " Running quick tunnel..."
+  exec cloudflared tunnel --url "$(bashio::config 'url')"
+else
+  bashio::log.blue " Running tunnel..."
+  exec cloudflared tunnel --config=/data/options.json run
+fi
+
+bashio::log.trace "</tunnel>"

@@ -1,10 +1,13 @@
 name: Cloudflare Tunnel
-version: 1.6.0
+version: 1.6.1
 slug: cloudflare_tunnel
 description: Cloudflare Tunnel for Home Assistant
 url: https://github.com/w35l3y/hassio-addons/tree/main/cloudflare_tunnel
+codenotary: www.wesley@gmail.com
 ingress: false
 init: false
+watchdog: http://[HOST]:41705/healthcheck
+webui: http://[HOST]:[PORT:41705]/metrics
 apparmor: true
 panel_icon: mdi:tunnel
 arch:
@@ -25,6 +28,7 @@ options:
   credentials-file: "/data/tunnel.json"
   protocol: auto
   origincert: "/data/cert.pem"
+  log_level: info
   loglevel: info
   transport-loglevel: warn
   ingress:
@@ -34,7 +38,7 @@ options:
   originRequest: {}
   warp-routing:
     enabled: false
-  metrics: localhost:41705
+  metrics: 0.0.0.0:41705
   metrics-update-freq: 5s
   grace-period: 30s
   retries: 5
@@ -42,11 +46,12 @@ options:
 schema:
   tunnel: str?
   credentials-file: str?
-  protocol: str?
+  protocol: list(auto|http2|h2mux|quic)
   origincert: str?
   logfile: str?
-  loglevel: str?
-  transport-loglevel: str?
+  log_level: list(notset|debug|info|warn|warning|error|fatal|critical)
+  loglevel: list(trace|debug|info|warn|error|fatal|panic)?
+  transport-loglevel: list(trace|debug|info|warn|error|fatal|panic)?
   url: str?
   ingress:
     - hostname: str?

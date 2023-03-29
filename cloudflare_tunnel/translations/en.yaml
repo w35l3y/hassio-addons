@@ -1,0 +1,63 @@
+configuration:
+  tunnel:
+    name: Tunnel name
+    description: Identifier that lets you easily reference a tunnel whenever you need.
+  credentials-file:
+    name: Credentials file
+    description: It stores your tunnel’s credentials in JSON format, and is unique to each tunnel. This file functions as a token authenticating the tunnel it is associated with.
+  protocol:
+    name: Protocol
+    description: Specifies the protocol used to establish a connection between cloudflared and the edge.
+  origincert:
+    name: Origin cert
+    description: Specifies the Tunnel certificate for one of your zones, authorizing the client to serve as an origin for that zone. A certificate is required to use Cloudflare Tunnel.
+  logfile:
+    name: Log file
+    description: Saves application log to this file. Mainly useful for reporting issues.
+  log_level:
+    name: Log level
+    description: This is specific configuration for Home Assistant.
+  loglevel:
+    name: Log level
+    description: Specifies the verbosity of logging.
+  transport-loglevel:
+    name: Transport log level
+    description: Specifies the verbosity of logs for the transport between cloudflared and the Cloudflare edge.
+  url:
+    name: Url
+    description: Quick tunnels, when run, will generate a URL that consists of a random subdomain of the website trycloudflare.com
+  ingress:
+    name: Ingress
+    description: Specifies which local services traffic should be proxied to.
+  originRequest:
+    name: Origin request configurations
+    description: Top-level configuration for origin requests.
+  warp-routing:
+    name: Warp routing
+  metrics:
+    name: Metrics (address:port)
+    description: Specifies address to query for usage metrics.
+  metrics-update-freq:
+    name: Metrics update frequency
+    description: Specifies frequency to update tunnel metrics.
+  grace-period:
+    name: Grace period
+    description: When cloudflared receives SIGINT/SIGTERM it will stop accepting new requests, wait for in-progress requests to terminate, then shut down. Waiting for in-progress requests will timeout after this grace period, or when a second SIGTERM/SIGINT is received.
+  retries:
+    name: Retries
+    description: Specifies the maximum number of retries for connection/protocol errors. Retries use exponential backoff (retrying at 1, 2, 4, 8, 16 seconds by default), so it is not recommended that you increase this value significantly.
+  no-autoupdate:
+    name: No update
+    description: Disables periodic check for updates, restarting the server with the new version.
+  autoupdate-freq:
+    name: Autoupdate frequency
+    description: Configures autoupdate frequency.
+  tag:
+    name: Tags
+    description: Specifies custom tags used to identify this tunnel, in format KEY=VALUE. Multiple tags may be specified by delimiting them with commas e.g. KEY1=VALUE1, KEY2=VALUE2.
+  pidfile:
+    name: PID file
+    description: Writes the application’s process identifier (PID) to this file after the first successful connection. Mainly useful for scripting and service integration.
+  region:
+    name: Region
+    description: Allows you to choose the regions to which connections are established. Omit or leave empty to connect to the global region.

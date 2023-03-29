@@ -49,8 +49,8 @@ _For more details:_
 - Open Configuration tab and add the following code:
 
 | If you don't have your own domain | If you have your own domain |
-|---|---|
-| Note 1: This way, `a-very-long-random-subdomain-name.trycloudflare.com` will be created after you complete step 4 and it will be different on every boot.<br />Note 2: It is only recommended for testing purpose. Consider getting your own domain for free at [Freenom](https://www.freenom.com).<br /><br />Pay attention that the property `url` is exclusive to those who **don't have** own domain. Just remove it if you have your own domain.<br /><br /><pre>no-autoupdate: true<br />metrics: localhost:41705<br />ingress: []<br />originRequest: {}<br />url: http://homeassistant:8123<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /> | Your domain must be managed by [Cloudflare](https://dash.cloudflare.com/)<br />Note: This way, you can have as many services as you want at once.<br />The last one is "catch-all", so it doesn't have specific hostname. You may also use wildcard character in hostname.<br /><br />Pay attention that the property `tunnel` is exclusive to those who **have** own domain. Just remove it if you don't have your own domain.<br /><br />* Example with only Home Assistant<pre>no-autoupdate: true<br />metrics: localhost:41705<br />ingress:<br />  - service: http://homeassistant:8123<br />    hostname: home.mydomain.com<br />  - service: http_status:404<br />originRequest: {}<br />tunnel: homeassistant<br /></pre><br />* Example with Home Assistant and many other services<br />If you need to externalize more services, just add a new service and hostname for each of them.<br />**These are only examples... make sure to have some kind of authetication on each externalized service.**<br />Otherwise, it will be open to anyone in the world.<br /><pre>no-autoupdate: true<br />metrics: localhost:41705<br />ingress:<br />  - service: http://homeassistant:8123<br />    hostname: home.mydomain.com<br />  - service: http://homeassistant:1880<br />    hostname: nodered.mydomain.com<br />  - service: mqtt://homeassistant:1883<br />    hostname: mqttbroker.mydomain.com<br />  - service: http_status:404<br />originRequest: {}<br />tunnel: homeassistant<br /></pre> |
+| --- | --- |
+| Note 1: This way, `a-very-long-random-subdomain-name.trycloudflare.com` will be created after you complete step 4 and it will be different on every boot.<br />Note 2: It is only recommended for testing purpose. Consider getting your own domain for free at [Freenom](https://www.freenom.com).<br /><br />Pay attention that the property `url` is exclusive to those who **don't have** own domain. Just remove it if you have your own domain.<br /><br /><pre>no-autoupdate: true<br />metrics: localhost:41705<br />ingress: []<br />originRequest: {}<br />url: http://homeassistant:8123<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /> | Your domain must be managed by [Cloudflare](https://dash.cloudflare.com/)<br />Note: This way, you can have as many services as you want at once.<br />The last one is "catch-all", so it doesn't have specific hostname. You may also use wildcard character in hostname.<br /><br />Pay attention that the property `tunnel` is exclusive to those who **have** own domain. Just remove it if you don't have your own domain.<br /><br />_ Example with only Home Assistant<pre>no-autoupdate: true<br />metrics: localhost:41705<br />ingress:<br /> - service: http://homeassistant:8123<br /> hostname: home.mydomain.com<br /> - service: http_status:404<br />originRequest: {}<br />tunnel: homeassistant<br /></pre><br />_ Example with Home Assistant and many other services<br />If you need to externalize more services, just add a new service and hostname for each of them.<br />**These are only examples... make sure to have some kind of authetication on each externalized service.**<br />Otherwise, it will be open to anyone in the world.<br /><pre>no-autoupdate: true<br />metrics: localhost:41705<br />ingress:<br /> - service: http://homeassistant:8123<br /> hostname: home.mydomain.com<br /> - service: http://homeassistant:1880<br /> hostname: nodered.mydomain.com<br /> - service: mqtt://homeassistant:1883<br /> hostname: mqttbroker.mydomain.com<br /> - service: http_status:404<br />originRequest: {}<br />tunnel: homeassistant<br /></pre> |
 
 **Don't mix things! Or you have your own domain or you don't have.**<br />
 
@@ -88,7 +88,10 @@ _For more details:_
 
 ## References
 
-- <a href="https://iconscout.com/icons/cloudflare" target="_blank">Cloudflare Icon</a> on <a href="https://iconscout.com">Iconscout</a><br />
+- <a href="https://iconscout.com/icons/cloudflare" target="_blank">
+    Cloudflare Icon
+  </a> on <a href="https://iconscout.com">Iconscout</a>
+  <br />
 
 [aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
@@ -102,7 +105,7 @@ _For more details:_
 [issue]: https://github.com/w35l3y/hassio-addons/issues
 [license-shield]: https://img.shields.io/github/license/hassio-addons/addon-vscode.svg
 [license]: https://github.com/w35l3y/hassio-addons/LICENSE.md
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2022.svg
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2023.svg
 [project-stage-shield]: https://img.shields.io/badge/Project%20Stage-Development-yellowgreen.svg
 [releases]: https://github.com/w35l3y/hassio-addons/cloudflare_tunnel/releases
 [semver]: http://semver.org/spec/v2.0.0.htm
