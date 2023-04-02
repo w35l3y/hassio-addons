@@ -64,6 +64,7 @@ _For more details:_
 
 - _Watchdog missing application response from c50d1fa4_cloudflare_tunnel_<br />
   Change metrics to `0.0.0.0:41705` in the config.<br />
+  For details, check https://github.com/w35l3y/hassio-addons/issues/22#issuecomment-1491623708
 
 - _Tunnel credentials file '/data/tunnel.json' doesn't exist or is not a file_<br />
   Change the current tunnel name or reinstall the add-on.<br />
