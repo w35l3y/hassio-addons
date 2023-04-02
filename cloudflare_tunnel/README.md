@@ -48,9 +48,9 @@ _For more details:_
 - Press "Install"
 - Open Configuration tab and add the following code:
 
-| If you don't have your own domain | If you have your own domain |
+| If you have your own domain | If you don't have your own domain |
 | --- | --- |
-| Note 1: This way, `a-very-long-random-subdomain-name.trycloudflare.com` will be created after you complete the instructions and it will be different on every boot.<br />Note 2: It is only recommended for testing purpose. Consider getting your own domain for free at [Freenom](https://www.freenom.com).<br /><br /><pre>protocol: auto<br />log_level: info<br />warp-routing:<br />  enabled: false<br />no-autoupdate: true<br />metrics: 0.0.0.0:41705<br />ingress: []<br />originRequest: {}<br />url: http://homeassistant:8123<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /> | Your domain must be managed by [Cloudflare](https://dash.cloudflare.com/)<br />Note: This way, you can have as many services as you want at once.<br />The last one is "catch-all", so it doesn't have specific hostname. You may also use wildcard character in hostname.<br /><br />Pay attention that the property `url` is **exclusive** to those who **don't have** own domain.<br /><br />_Example with only Home Assistant_<pre>protocol: auto<br />log_level: info<br />warp-routing:<br />  enabled: false<br />no-autoupdate: true<br />metrics: 0.0.0.0:41705<br />ingress:<br /> - service: http://homeassistant:8123<br />   hostname: home.mydomain.com<br /> - service: http_status:404<br />originRequest: {}<br />tunnel: homeassistant<br /></pre>_Example with Home Assistant and many other services_<br /><pre>protocol: auto<br />log_level: info<br />warp-routing:<br />  enabled: false<br />no-autoupdate: true<br />metrics: 0.0.0.0:41705<br />ingress:<br /> - service: http://homeassistant:8123<br />   hostname: home.mydomain.com<br /> - service: http://homeassistant:1880<br />   hostname: nodered.mydomain.com<br /> - service: mqtt://homeassistant:1883<br />   hostname: broker.mydomain.com<br /> - service: http_status:404<br />originRequest: {}<br />tunnel: homeassistant<br /></pre>If you need to externalize more services, just add a new service and hostname for each of them.<br />**These are only examples... make sure to have some kind of authetication on each externalized service.**<br />Otherwise, it will be open to anyone in the world. |
+| Your domain must be managed by [Cloudflare](https://dash.cloudflare.com/)<br />This way, you can have as many services as you want at once.<br />The last one is "catch-all", so it doesn't have specific hostname. You may also use wildcard character in hostname.<br /><br />Pay attention that the property `url` is **exclusive** to those who **don't have** own domain.<br />If you keep it, add-on will understand you don't have your own domain and ignore everything else.<br /><br />_Example with only Home Assistant_<pre>log_level: info<br />originRequest: {}<br />warp-routing: {}<br />ingress:<br /> - service: http://homeassistant:8123<br />   hostname: home.mydomain.com<br /> - service: http_status:404<br /></pre>_Example with many services at once_<br /><pre>log_level: info<br />originRequest: {}<br />warp-routing: {}<br />ingress:<br /> - service: http://homeassistant:8123<br />   hostname: home.mydomain.com<br /> - service: http://homeassistant:1880<br />   hostname: nodered.mydomain.com<br /> - service: mqtt://homeassistant:1883<br />   hostname: broker.mydomain.com<br /> - service: http_status:404<br /></pre>If you need to externalize more services, just add a new service and hostname for each of them.<br />**These are only examples... make sure to have some kind of authetication on each externalized service.**<br />Otherwise, it will be open to anyone in the world.<br /><br /><br />4. Start the addon and go to tab Log<br />   - The authorization page should show up in the Log<br />     ![Screenshot of the Log containing the login URL][log-login-url]<br />Ps.: Make sure to be logged in first. Otherwise, you will need to enter that page again because the login page doesn't redirect you back to the right page.<br /><br />5. Authorize<br />   - Copy and paste the authorization link in the browser<br />   - Click `mydomain.com`<br />   - Confirm the authorization<br />![Screenshot of the authorization page][cloudflare-authorization]<br />![Screenshot of the authorization popup][cloudflare-authorize] | This way, `a-very-long-random-subdomain-name.trycloudflare.com` will be created after you complete the instructions and it will be different on every boot.<br /><br />It is only recommended for testing purpose.<br />Consider getting your own domain for free at [Freenom](https://www.freenom.com).<br /><br /><pre>log_level: info<br />originRequest: {}<br />warp-routing: {}<br />ingress: []<br />url: http://homeassistant:8123<br /></pre><br />4. Start the addon and go to tab Log<br />   - The page should show up in the Log<br />![Screenshot of the Log containing the quick tunnel][log-quick-tunnel]<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /> |
 
 **Don't mix things! Or you have your own domain or you don't have.**<br />
 
@@ -60,18 +60,10 @@ _For more details:_
 - https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/configuration/config
 - https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/configuration/ingress#matching-traffic
 
-4. Start the addon and go to tab Log<br />
-   - If you **don't have** your own domain, that should be it!<br />
-     - The page should show up in the Log<br />
-   - If you **have** your own domain, then follow the remaining steps.<br />
-     - The authetication page should show up in the Log<br />
-       ![Screenshot of the Log containing the login URL][log-login-url]
-5. Authenticate _(Beyond steps are for custom domains only)_<br />
-   - Copy and paste the authentication link in the browser<br />
-   - Click `mydomain.com`<br />
-   - Confirm the authentication<br />
-
 ## Common errors
+
+- _Watchdog missing application response from c50d1fa4_cloudflare_tunnel_<br />
+  Change metrics to `0.0.0.0:41705` in the config.<br />
 
 - _Tunnel credentials file '/data/tunnel.json' doesn't exist or is not a file_<br />
   Change the current tunnel name or reinstall the add-on.<br />
@@ -85,6 +77,7 @@ _For more details:_
 
 - _Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: **x509: cannot validate certificate for x.x.x.x because it doesn't contain any IP SANs**_<br />
   Update your internal SSL certificate because it is malformed/incomplete.<br />
+
 
 ## References
 
@@ -111,4 +104,7 @@ _For more details:_
 [semver]: http://semver.org/spec/v2.0.0.htm
 [log-login-url]: https://github.com/w35l3y/hassio-addons/raw/main/cloudflare_tunnel/resources/img/log-login-url.jpg
 [log-tunnel-created]: https://github.com/w35l3y/hassio-addons/raw/main/cloudflare_tunnel/resources/img/log-tunnel-created.jpg
+[log-quick-tunnel]: https://github.com/w35l3y/hassio-addons/raw/main/cloudflare_tunnel/resources/img/log-quick-tunnel.png
 [cloudflare-cname]: https://github.com/w35l3y/hassio-addons/raw/main/cloudflare_tunnel/resources/img/cloudflare-cname.jpg
+[cloudflare-authorization]: https://github.com/w35l3y/hassio-addons/raw/main/cloudflare_tunnel/resources/img/cloudflare-authorization.png
+[cloudflare-authorize]: https://github.com/w35l3y/hassio-addons/raw/main/cloudflare_tunnel/resources/img/cloudflare-authorize.png
