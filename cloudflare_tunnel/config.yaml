@@ -1,5 +1,5 @@
 name: Cloudflare Tunnel
-version: 1.6.1
+version: 1.7.0
 slug: cloudflare_tunnel
 description: Cloudflare Tunnel for Home Assistant
 url: https://github.com/w35l3y/hassio-addons/tree/main/cloudflare_tunnel
@@ -42,11 +42,12 @@ options:
   metrics-update-freq: 5s
   grace-period: 30s
   retries: 5
+  edge-ip-version: auto
   no-autoupdate: true
 schema:
   tunnel: str?
   credentials-file: str?
-  protocol: list(auto|http2|h2mux|quic)
+  protocol: list(auto|http2|h2mux|quic)?
   origincert: str?
   logfile: str?
   log_level: list(notset|debug|info|warn|warning|error|fatal|critical)
@@ -79,6 +80,7 @@ schema:
   grace-period: str?
   retries: int(0,)?
   no-autoupdate: bool?
+  edge-ip-version: list(auto|4|6)?
   autoupdate-freq: str?
   tag: str?
   pidfile: str?

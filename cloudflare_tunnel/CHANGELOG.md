@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][keepachangelog],
 and this project adheres to [Semantic Versioning][semver].
 
+## [1.7.0] - 2023-04-02
+
+### Added
+
+- Externalized ["edge-ip-version"][edge-ip-version]
+
 ## [1.6.0] - 2022-05-15
 
 ### Added
@@ -56,4 +62,5 @@ and this project adheres to [Semantic Versioning][semver].
 
 [semver]: https://semver.org/spec/v2.0.0.html
 [keepachangelog]: https://keepachangelog.com/en/1.0.0/
-[origincert]: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/configuration/arguments/#origincert
+[origincert]: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/tunnel-guide/local/local-management/arguments/#origincert
+[edge-ip-version]: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/tunnel-guide/local/local-management/arguments/#edge-ip-version
