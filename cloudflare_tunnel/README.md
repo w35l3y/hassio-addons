@@ -63,20 +63,25 @@ _For more details:_
 ## Common errors
 
 - _Watchdog missing application response from c50d1fa4_cloudflare_tunnel_<br />
+  _Keywords:_ restarting, disconnecting, watchdog, metrics<br />
   Change metrics to `0.0.0.0:41705` in the config.<br />
   For details, check https://github.com/w35l3y/hassio-addons/issues/22#issuecomment-1491623708
 
 - _Tunnel credentials file '/data/tunnel.json' doesn't exist or is not a file_<br />
+  _Keywords:_ conflict<br />
   Change the current tunnel name or reinstall the add-on.<br />
 
 - _400: Bad Request_<br />
+  _Keywords:_ proxy<br />
   Update `trusted_proxies` with the IP or range that is shown in the Home Assistant Logs (Sidebar `Configuration > Settings > Logs` and/or `Configuration > Add-ons, Backups & Supervisor > System > Log provider`).<br />
   For details on how to find the logs, check https://github.com/w35l3y/hassio-addons/issues/14#issuecomment-1115514830
 
 - _Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: **dial tcp: lookup xxx on xxx: server misbehaving**_<br />
+  _Keywords:_ wrong service<br />
   Update `url` or `service` with the correct local IP and port of the service in the addon configuration (Add-on Cloudflare Tunnel > Configuration).<br />
 
 - _Unable to reach the origin service. The service may be down or it may not be responding to traffic from cloudflared: **x509: cannot validate certificate for x.x.x.x because it doesn't contain any IP SANs**_<br />
+  _Keywords:_ certificate<br />
   Update your internal SSL certificate because it is malformed/incomplete.<br />
 
 
